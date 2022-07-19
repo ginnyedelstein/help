@@ -1,0 +1,7 @@
+{
+  "help": [
+    { "request": "charger" },
+    { "request": "laptop" },
+    { "request": "table" }
+  ]
+}

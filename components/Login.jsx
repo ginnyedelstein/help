@@ -51,8 +51,8 @@ export default function Login({ setUser }) {
           //   password: "Help123!",
           // }),
           body: JSON.stringify({
-            email: "richardjperkins89@gmail.com",
-            password: "rrrRRR1!",
+            email: email, //"richardjperkins89@gmail.com",
+            password: password //"rrrRRR1!",
           }),
         }
       );

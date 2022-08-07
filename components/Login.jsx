@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import React, { useState, useContext } from "react";
 import jwt_decode from "jwt-decode";
-
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import * as Color from "../styles/Color";
@@ -32,7 +32,7 @@ const ErrorMessage = ({ errorValue }) => (
   </View>
 );
 
-export default function Login({ setUser }) {
+export default function Login({ user, setUser, setIsNotSignedIn }) {
   // const { signIn } = useContext(AuthContext);
   const [loginActive, setLoginActive] = useState(true);
 
@@ -52,16 +52,16 @@ export default function Login({ setUser }) {
           // }),
           body: JSON.stringify({
             email: email, //"richardjperkins89@gmail.com",
-            password: password //"rrrRRR1!",
+            password: password, //"rrrRRR1!",
           }),
         }
       );
       const resJson = await res.json();
       if (res.status === 200) {
-        const userToken = JSON.stringify(jwt_decode(resJson.idToken).sub);
+        const userToken = jwt_decode(resJson.idToken).sub;
         // const stringified = JSON.stringify(Array(userToken)[0]);
-        alert(userToken);
         setUser(userToken);
+        setIsNotSignedIn(false);
         return userToken;
       } else {
         // setResult("empty");
@@ -110,7 +110,6 @@ export default function Login({ setUser }) {
       if (res.status === 200) {
         const cleanedRes = JSON.stringify(resJson);
         // const stringified = JSON.stringify(Array(cleanedRes)[0]);
-        alert(cleanedRes);
         return cleanedRes;
       } else {
         // setResult("empty");

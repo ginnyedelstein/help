@@ -7,14 +7,16 @@ import {
   Dimensions,
   FlatList,
   TouchableHighlight,
-  Button,
+  TouchableOpacity,
 } from "react-native";
 import SafeAreaView from "react-native-safe-area-view";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import React, { useState, useCallback, useEffect } from "react";
 // import DropDownPicker from "react-native-dropdown-picker";
 
 import * as Color from "../styles/Color";
+import { Colors } from "react-native/Libraries/NewAppScreen";
 
 const Feed = ({ user }) => {
   const help = [1, 2, 3, 4];
@@ -61,7 +63,6 @@ const Feed = ({ user }) => {
       if (res.status === 200) {
         let result = [];
         let json_data = resJson.body;
-        console.log(json_data);
         setFeed(json_data);
       } else {
         alert(res.status);
@@ -83,6 +84,7 @@ const Feed = ({ user }) => {
 
   const acceptById = async (requestId) => {
     alert(requestId);
+    alert(user);
     try {
       const res = await fetch(
         `https://yl2dnogf69.execute-api.us-east-1.amazonaws.com/requests/${requestId}`,
@@ -191,18 +193,50 @@ const Feed = ({ user }) => {
         }
         data={feed}
         renderItem={({ item, index }) => (
-          <View>
-            <Text>
+          <View style={styles.card}>
+            <Text style={styles.request}>{item.request} </Text>
+            <Text style={styles.description}>{item.description} </Text>
+
+            {/* <Text>
               {index}: {item.userId}{" "}
               {item.give == "true" ? "IS GIVING HELP FOR" : "NEEDS"}{" "}
               {item.description || "no description"} ACCEPTED BY{" "}
               {item.acceptedUserId || "no one"}
-            </Text>
-            <Button title="accept" onPress={() => acceptById(item.requestId)} />
+            </Text> */}
+            <View style={styles.buttons}>
+              {item.completed === false ? (
+                <TouchableOpacity
+                  style={styles.chat}
+                  title="accept"
+                  onPress={() => acceptById(item.requestId)}
+                >
+                  <MaterialCommunityIcons
+                    name="text-box-check-outline"
+                    color={Color.GREEN4}
+                    size={30}
+                  />
+                </TouchableOpacity>
+              ) : (
+                <></>
+              )}
+              <TouchableOpacity
+                style={styles.chat}
+                title="chat"
+                onPress={() => console.log(item.requestId)}
+              >
+                <MaterialCommunityIcons
+                  name="forum-outline"
+                  color={Color.GREEN4}
+                  size={30}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
         )}
       />
       {/* </ScrollView> */}
+
+      {/* expanded: location, photos3Url, userId */}
     </SafeAreaView>
   );
 };
@@ -211,14 +245,9 @@ export default Feed;
 const styles = StyleSheet.create({
   container: {
     display: "flex",
-    flex: 1,
     alignItems: "center",
   },
-  scrollContainer: {
-    flex: 1,
-    // alignItems: "center",
-    justifyContent: "center",
-  },
+  scrollContainer: {},
   filersContainer: {
     flex: 1,
     // alignItems: "center",
@@ -226,5 +255,37 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     marginLeft: 60,
     marginTop: 40,
+  },
+  card: {
+    display: "flex",
+    margin: 10,
+    backgroundColor: Color.GREEN2,
+    justifyContent: "center",
+    padding: 10,
+    width: Dimensions.get("window").width - 20,
+    borderRadius: 5,
+  },
+  request: {
+    display: "flex",
+    alignContent: "flex-start",
+    fontWeight: "400",
+  },
+  description: {
+    display: "flex",
+    alignContent: "flex-start",
+    fontWeight: "300",
+  },
+  chat: {
+    margin: 5,
+    height: 31,
+  },
+  buttons: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    padding: 2,
+    width: Dimensions.get("window").width - 50,
+    height: 31,
+    borderRadius: 5,
   },
 });

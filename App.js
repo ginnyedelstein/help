@@ -42,7 +42,7 @@ export default function App() {
   // const username = useContext(authContext);
   const [user, setUser] = useState("");
 
-  const [isNotSignedIn, setIsNotSignedIn] = useState(false);
+  const [isNotSignedIn, setIsNotSignedIn] = useState(true);
 
   const Tab = createMaterialBottomTabNavigator();
 
@@ -65,13 +65,25 @@ export default function App() {
   function LoginScreen() {
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <Login setUser={setUser} user={user} />
+        <Login
+          setUser={setUser}
+          user={user}
+          setIsNotSignedIn={setIsNotSignedIn}
+        />
+      </View>
+    );
+  }
+
+  function ProfileScreen() {
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Profile user={user} />
       </View>
     );
   }
 
   return isNotSignedIn ? (
-    <Login />
+    <Login setUser={setUser} user={user} setIsNotSignedIn={setIsNotSignedIn} />
   ) : (
     <NavigationContainer>
       <Tab.Navigator
@@ -120,7 +132,7 @@ export default function App() {
         />
         <Tab.Screen
           name="Profile"
-          component={Profile}
+          component={ProfileScreen}
           options={{
             title: "Profile",
             tabBarLabel: "Profile",

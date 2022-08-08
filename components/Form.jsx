@@ -13,18 +13,19 @@ import { Picker } from "@react-native-picker/picker";
 
 import { Formik } from "formik";
 import * as Yup from "yup";
+import * as Color from "../styles/Color";
 
 const validationSchema = Yup.object().shape({
   title: Yup.string()
     .label("GetHelp")
     .required("Enter a valid request")
-    .min(10, "Min length: 3 chars")
-    .max(10, "Max length: 50 chars"),
+    .min(3, "Min length: 3 chars")
+    .max(50, "Max length: 50 chars"),
   description: Yup.string()
     .label("GetHelp")
     .required("Enter a valid request")
     .min(10, "Min length: 10 chars")
-    .min(10, "Max length: 350 chars"),
+    .max(350, "Max length: 350 chars"),
 });
 
 const ErrorMessage = ({ errorValue }) => (
@@ -38,15 +39,61 @@ export default function Form({}) {
   const [selectedDistance, setSelectedDistance] = useState("5");
   const [getHelpActive, setGetHelpActive] = useState(true);
 
-  function onSubmitHandler(values) {
-    const { title, description, category, distance } = values;
+  // function onSubmitHandler(values) {
+  //   const { title, description, category, distance } = values;
 
-    alert(
-      `Help entered. Help ${
-        getHelpActive ? "requested" : "offered"
-      }: ${title}, ${description}, ${selectedCategory} , ${selectedDistance}`
-    );
-  }
+  //   alert(
+  //     `Help entered. Help ${
+  //       getHelpActive ? "requested" : "offered"
+  //     }: ${title}, ${description}, ${selectedCategory} , ${selectedDistance}`
+  //   );
+  // }
+
+  const onSubmitHandler = async ({
+    title,
+    description,
+    category,
+    distance,
+  }) => {
+    try {
+      const res = await fetch(
+        `https://yl2dnogf69.execute-api.us-east-1.amazonaws.com/requests`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: "ginny.rae@hotmail.com",
+            request: title,
+            description: description,
+            give: getHelpActive,
+            category: category,
+            location: "tbd",
+            photoS3Url: "",
+          }),
+          // body: JSON.stringify({
+          //   email: email1,
+          //   password: password1,
+          // }),
+        }
+      );
+      const resJson = await res.json();
+      if (res.status === 200) {
+        const cleanedRes = JSON.stringify(resJson);
+        // const stringified = JSON.stringify(Array(cleanedRes)[0]);
+        alert(cleanedRes);
+        return cleanedRes;
+      } else {
+        // setResult("empty");
+        alert(res.status);
+      }
+    } catch (err) {
+      // setResult("error");
+      alert(err);
+    }
+  };
 
   return (
     <ScrollView>
@@ -56,7 +103,7 @@ export default function Form({}) {
             activeOpacity={1}
             onHideUnderlay={() => setGetHelpActive(true)}
             onShowUnderlay={() => setGetHelpActive(false)}
-            underlayColor={"#296f2f"}
+            underlayColor={Color.GREEN2}
             onPress={() => setGetHelpActive(false)}
             style={
               getHelpActive
@@ -70,7 +117,7 @@ export default function Form({}) {
             activeOpacity={1}
             onHideUnderlay={() => setGetHelpActive(false)}
             onShowUnderlay={() => setGetHelpActive(true)}
-            underlayColor={"#296f2f"}
+            underlayColor={Color.GREEN2}
             onPress={() => setGetHelpActive(true)}
             style={
               getHelpActive
@@ -139,6 +186,13 @@ export default function Form({}) {
                 style={styles.picker}
               >
                 <Picker.Item label="General" value="general" />
+                <Picker.Item label="Athletics" value="athletics" />
+                <Picker.Item label="Children" value="children" />
+                <Picker.Item label="Clothing" value="clothing" />
+                <Picker.Item label="Entertainment" value="entertainment" />
+                <Picker.Item label="Home" value="home" />
+                <Picker.Item label="Kitchen" value="kitchen" />
+                <Picker.Item label="Pet" value="pet" />
                 <Picker.Item label="Technology" value="technology" />
               </Picker>
               <Text>select help radius</Text>
@@ -217,7 +271,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width / 3,
     height: 44,
     borderRadius: 5,
-    backgroundColor: "#69a96e",
+    backgroundColor: Color.GREEN3,
     flexDirection: "row",
   },
   button2ContainerActive: {
@@ -228,7 +282,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width / 3,
     height: 44,
     borderRadius: 5,
-    backgroundColor: "#296f2f",
+    backgroundColor: Color.GREEN4,
     flexDirection: "row",
   },
   button2Wrapper: {

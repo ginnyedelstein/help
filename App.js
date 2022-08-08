@@ -1,3 +1,4 @@
+import React, { createContext, useState, useContext } from "react";
 import {
   View,
   Text,
@@ -16,6 +17,7 @@ import Form from "./components/Form";
 import Profile from "./components/Profile";
 import Login from "./components/Login";
 import Feed from "./components/Feed";
+import * as Color from "./styles/Color";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -35,18 +37,19 @@ const ErrorMessage = ({ errorValue }) => (
 );
 
 export default function App() {
-  function onLoginHandler(values) {
-    const { email, password } = values;
+  const authContext = createContext(undefined);
+  // const authenticated = useContext(authContext);
+  // const username = useContext(authContext);
+  const [user, setUser] = useState("");
 
-    alert(`Credentials entered. email: ${email}, password: ${password}`);
-  }
+  const [isNotSignedIn, setIsNotSignedIn] = useState(true);
 
   const Tab = createMaterialBottomTabNavigator();
 
   function FeedScreen() {
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <Text>Feed Screen</Text>
+        <Feed user={user} />
       </View>
     );
   }
@@ -59,18 +62,40 @@ export default function App() {
     );
   }
 
-  return (
+  function LoginScreen() {
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Login
+          setUser={setUser}
+          user={user}
+          setIsNotSignedIn={setIsNotSignedIn}
+        />
+      </View>
+    );
+  }
+
+  function ProfileScreen() {
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Profile user={user} />
+      </View>
+    );
+  }
+
+  return isNotSignedIn ? (
+    <Login setUser={setUser} user={user} setIsNotSignedIn={setIsNotSignedIn} />
+  ) : (
     <NavigationContainer>
       <Tab.Navigator
         initialRouteName="Feed"
         labeled="false"
-        activeColor="#f0edf6"
-        inactiveColor="green"
-        barStyle={{ backgroundColor: "lightgreen" }}
+        activeColor={Color.GREEN1}
+        inactiveColor={Color.GREEN2}
+        barStyle={{ backgroundColor: Color.GREEN3 }}
       >
         <Tab.Screen
           name="Feed"
-          component={Feed}
+          component={FeedScreen}
           options={{
             title: "The Feed",
             tabBarLabel: "Feed",
@@ -96,7 +121,7 @@ export default function App() {
         />
         <Tab.Screen
           name="Chat"
-          component={Login}
+          component={LoginScreen}
           options={{
             title: "Chat",
             tabBarLabel: "Chat",
@@ -107,7 +132,7 @@ export default function App() {
         />
         <Tab.Screen
           name="Profile"
-          component={Profile}
+          component={ProfileScreen}
           options={{
             title: "Profile",
             tabBarLabel: "Profile",

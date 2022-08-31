@@ -7,27 +7,28 @@ import {
   TextInput,
   StyleSheet,
   Dimensions,
-} from "react-native";
+} from 'react-native'
 
-import React, { useState, useContext } from "react";
-import jwt_decode from "jwt-decode";
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import { Formik } from "formik";
-import * as Yup from "yup";
-import * as Color from "../styles/Color";
+import React, { useState, useContext } from 'react'
+import jwt_decode from 'jwt-decode'
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
+import { Formik } from 'formik'
+import * as Yup from 'yup'
+import * as Color from '../styles/Color'
+import Config from '../lib/Config'
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
-    .label("Email")
-    .email("Enter a valid email")
-    .required("Please enter a registered email"),
+    .label('Email')
+    .email('Enter a valid email')
+    .required('Please enter a registered email'),
   password: Yup.string()
-    .label("Password")
+    .label('Password')
     .required()
-    .min(8, "Password must have at least 8 characters ")
+    .min(8, 'Password must have at least 8 characters ')
     .matches(
       /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
-      "Password must include uppercase, lowercase, number and special characters"
+      'Password must include uppercase, lowercase, number and special characters'
     ),
   // firstName: Yup.string().label("First Name").required(),
   // lastName: Yup.string()
@@ -37,54 +38,51 @@ const validationSchema = Yup.object().shape({
   // gender: Yup.string().label("Gender").required(),
   // address: Yup.string().label("Address").required(),
   // birthdate: Yup.string().label("Birthdate").required(),
-});
+})
 
 const ErrorMessage = ({ errorValue }) => (
   <View style={styles.errorContainer}>
     <Text style={styles.errorText}>{errorValue}</Text>
   </View>
-);
+)
 
 export default function Login({ user, setUser, setIsNotSignedIn }) {
   // const { signIn } = useContext(AuthContext);
-  const [loginActive, setLoginActive] = useState(true);
+  const [loginActive, setLoginActive] = useState(true)
 
   const callLogin = async (email, password) => {
     try {
-      const res = await fetch(
-        `https://yl2dnogf69.execute-api.us-east-1.amazonaws.com/sign-in`,
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          // body: JSON.stringify({
-          //   email: "ginny.rae@hotmail.com",
-          //   password: "Help123!",
-          // }),
-          body: JSON.stringify({
-            email: email, //"richardjperkins89@gmail.com",
-            password: password, //"rrrRRR1!",
-          }),
-        }
-      );
-      const resJson = await res.json();
+      const res = await fetch(`${Config.apiUrl}/sign-in`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        // body: JSON.stringify({
+        //   email: "ginny.rae@hotmail.com",
+        //   password: "Help123!",
+        // }),
+        body: JSON.stringify({
+          email: email, //"richardjperkins89@gmail.com",
+          password: password, //"rrrRRR1!",
+        }),
+      })
+      const resJson = await res.json()
       if (res.status === 200) {
-        const userToken = jwt_decode(resJson.idToken).sub;
+        const userToken = jwt_decode(resJson.idToken).sub
         // const stringified = JSON.stringify(Array(userToken)[0]);
-        setUser(userToken);
-        setIsNotSignedIn(false);
-        return userToken;
+        setUser(userToken)
+        setIsNotSignedIn(false)
+        return userToken
       } else {
         // setResult("empty");
-        alert(res.status);
+        alert(res.message)
       }
     } catch (err) {
       // setResult("error");
-      alert(err);
+      alert(err)
     }
-  };
+  }
 
   const callSignup = async (
     email,
@@ -96,66 +94,55 @@ export default function Login({ user, setUser, setIsNotSignedIn }) {
     password
   ) => {
     try {
-      const res = await fetch(
-        `https://yl2dnogf69.execute-api.us-east-1.amazonaws.com/users`,
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: email,
-            firstName: firstName,
-            lastName: lastName,
-            gender: gender,
-            address: address,
-            birthdate: birthdate,
-            password: password,
-          }),
-          // body: JSON.stringify({
-          //   email: email1,
-          //   password: password1,
-          // }),
-        }
-      );
-      const resJson = await res.json();
+      const res = await fetch(`${Config.apiUrl}/users`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          firstName: firstName,
+          lastName: lastName,
+          gender: gender,
+          address: address,
+          birthdate: birthdate,
+          password: password,
+        }),
+        // body: JSON.stringify({
+        //   email: email1,
+        //   password: password1,
+        // }),
+      })
+      const resJson = await res.json()
       if (res.status === 200) {
-        const cleanedRes = JSON.stringify(resJson);
+        const cleanedRes = JSON.stringify(resJson)
         // const stringified = JSON.stringify(Array(cleanedRes)[0]);
-        return cleanedRes;
+        return cleanedRes
       } else {
         // setResult("empty");
-        alert(res.status);
+        alert(resJson.body)
       }
     } catch (err) {
       // setResult("error");
-      alert(err);
+      alert(err)
     }
-  };
+  }
 
   function onLoginHandler(values) {
-    const { email, password } = values;
-    callLogin(email, password);
+    const { email, password } = values
+    callLogin(email, password)
     // alert(`Credentials entered. email: ${email}, password: ${password}`);
   }
 
   function onSignupHandler(values) {
     const { email, firstName, lastName, gender, address, birthdate, password } =
-      values;
+      values
     // alert(
     //   `Credentials entered. email: ${email}, password: ${password}, b ${birthdate}, a ${address} f ${firstName} l ${lastName}`
     // );
 
-    callSignup(
-      email,
-      firstName,
-      lastName,
-      gender,
-      address,
-      birthdate,
-      password
-    );
+    callSignup(email, firstName, lastName, gender, address, birthdate, password)
   }
 
   return (
@@ -193,11 +180,11 @@ export default function Login({ user, setUser, setIsNotSignedIn }) {
       {loginActive ? (
         <Formik
           initialValues={{
-            email: "",
-            password: "",
+            email: '',
+            password: '',
           }}
           onSubmit={(values, actions) => {
-            onLoginHandler(values, actions);
+            onLoginHandler(values, actions)
           }}
           validationSchema={validationSchema}
         >
@@ -215,11 +202,11 @@ export default function Login({ user, setUser, setIsNotSignedIn }) {
                 numberOfLines={1}
                 value={values.email}
                 placeholder="Enter email"
-                onChangeText={handleChange("email")}
+                onChangeText={handleChange('email')}
                 autoCapitalize="none"
                 autoCompleteType="email"
                 keyboardType="email-address"
-                onBlur={handleBlur("email")}
+                onBlur={handleBlur('email')}
               />
               <ErrorMessage errorValue={touched.email && errors.email} />
               <TextInput
@@ -227,9 +214,9 @@ export default function Login({ user, setUser, setIsNotSignedIn }) {
                 numberOfLines={1}
                 value={values.password}
                 placeholder="Enter password"
-                onChangeText={handleChange("password")}
+                onChangeText={handleChange('password')}
                 autoCapitalize="none"
-                onBlur={handleBlur("password")}
+                onBlur={handleBlur('password')}
                 secureTextEntry={true}
               />
               <ErrorMessage errorValue={touched.password && errors.password} />
@@ -245,16 +232,16 @@ export default function Login({ user, setUser, setIsNotSignedIn }) {
       ) : (
         <Formik
           initialValues={{
-            email: "",
-            firstName: "",
-            lastName: "",
-            gender: "",
-            address: "",
-            birthdate: "",
-            password: "",
+            email: '',
+            firstName: '',
+            lastName: '',
+            gender: '',
+            address: '',
+            birthdate: '',
+            password: '',
           }}
           onSubmit={(values, actions) => {
-            onSignupHandler(values, actions);
+            onSignupHandler(values, actions)
           }}
           validationSchema={validationSchema}
         >
@@ -272,11 +259,11 @@ export default function Login({ user, setUser, setIsNotSignedIn }) {
                 numberOfLines={1}
                 value={values.email}
                 placeholder="Enter email"
-                onChangeText={handleChange("email")}
+                onChangeText={handleChange('email')}
                 autoCapitalize="none"
                 autoCompleteType="email"
                 keyboardType="email-address"
-                onBlur={handleBlur("email")}
+                onBlur={handleBlur('email')}
               />
               <ErrorMessage errorValue={touched.email && errors.email} />
               <TextInput
@@ -284,9 +271,9 @@ export default function Login({ user, setUser, setIsNotSignedIn }) {
                 numberOfLines={1}
                 value={values.password}
                 placeholder="Enter password"
-                onChangeText={handleChange("password")}
+                onChangeText={handleChange('password')}
                 autoCapitalize="none"
-                onBlur={handleBlur("password")}
+                onBlur={handleBlur('password')}
                 secureTextEntry={true}
               />
               <ErrorMessage errorValue={touched.password && errors.password} />
@@ -295,45 +282,45 @@ export default function Login({ user, setUser, setIsNotSignedIn }) {
                 numberOfLines={1}
                 value={values.firstName}
                 placeholder="Enter first name"
-                onChangeText={handleChange("firstName")}
+                onChangeText={handleChange('firstName')}
                 autoCapitalize="none"
-                onBlur={handleBlur("firstName")}
+                onBlur={handleBlur('firstName')}
               />
               <TextInput
                 style={styles.input}
                 numberOfLines={1}
                 value={values.lastName}
                 placeholder="Enter last name"
-                onChangeText={handleChange("lastName")}
+                onChangeText={handleChange('lastName')}
                 autoCapitalize="none"
-                onBlur={handleBlur("lastName")}
+                onBlur={handleBlur('lastName')}
               />
               <TextInput
                 style={styles.input}
                 numberOfLines={1}
                 value={values.gender}
                 placeholder="Enter gender"
-                onChangeText={handleChange("gender")}
+                onChangeText={handleChange('gender')}
                 autoCapitalize="none"
-                onBlur={handleBlur("gender")}
+                onBlur={handleBlur('gender')}
               />
               <TextInput
                 style={styles.input}
                 numberOfLines={1}
                 value={values.address}
                 placeholder="Enter address"
-                onChangeText={handleChange("address")}
+                onChangeText={handleChange('address')}
                 autoCapitalize="none"
-                onBlur={handleBlur("address")}
+                onBlur={handleBlur('address')}
               />
               <TextInput
                 style={styles.input}
                 numberOfLines={1}
                 value={values.birthdate}
                 placeholder="Enter birthday"
-                onChangeText={handleChange("birthdate")}
+                onChangeText={handleChange('birthdate')}
                 autoCapitalize="none"
-                onBlur={handleBlur("birthdate")}
+                onBlur={handleBlur('birthdate')}
               />
 
               {/* <DatePicker
@@ -357,7 +344,7 @@ export default function Login({ user, setUser, setIsNotSignedIn }) {
         </Formik>
       )}
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -365,16 +352,16 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   errorText: {
-    color: "red",
+    color: 'red',
   },
   container: {
     flex: 1,
-    alignItems: "center",
+    alignItems: 'center',
     marginTop: 40,
   },
   input: {
     marginVertical: 10,
-    width: Dimensions.get("window").width - 100,
+    width: Dimensions.get('window').width - 100,
 
     height: 40,
     borderWidth: 1,
@@ -383,48 +370,48 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginVertical: 10,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 10,
-    width: Dimensions.get("window").width - 200,
+    width: Dimensions.get('window').width - 200,
     height: 44,
     borderRadius: 5,
-    backgroundColor: "#343434",
+    backgroundColor: '#343434',
   },
   button2Container: {
     margin: 10,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 10,
-    width: Dimensions.get("window").width / 3,
+    width: Dimensions.get('window').width / 3,
     height: 44,
     borderRadius: 5,
     backgroundColor: Color.GREEN3,
-    flexDirection: "row",
+    flexDirection: 'row',
   },
   button2ContainerActive: {
     margin: 10,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 10,
-    width: Dimensions.get("window").width / 3,
+    width: Dimensions.get('window').width / 3,
     height: 44,
     borderRadius: 5,
     backgroundColor: Color.GREEN4,
-    flexDirection: "row",
+    flexDirection: 'row',
   },
   button2Wrapper: {
     marginVertical: 10,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 10,
-    width: Dimensions.get("window").width / 3,
+    width: Dimensions.get('window').width / 3,
     height: 44,
     borderRadius: 5,
-    flexDirection: "row",
+    flexDirection: 'row',
   },
   buttonText: {
     fontSize: 18,
-    color: "#ffffff",
+    color: '#ffffff',
   },
-});
+})

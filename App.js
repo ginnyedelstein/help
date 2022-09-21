@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from 'react'
+import React, { createContext, useState, useContext } from 'react';
 import {
   View,
   Text,
@@ -6,21 +6,21 @@ import {
   TextInput,
   StyleSheet,
   Dimensions,
-} from 'react-native'
-import { Formik } from 'formik'
-import * as Yup from 'yup'
-import { NavigationContainer } from '@react-navigation/native'
-import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+} from 'react-native';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
+import { NavigationContainer } from '@react-navigation/native';
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import Form from './components/Form'
-import Profile from './components/Profile'
-import Login from './components/Login'
-import Feed from './components/Feed'
-import * as Color from './styles/Color'
-import ChatList from './components/ChatList'
-import Chat from './components/Chat'
+import Form from './components/Form';
+import Profile from './components/Profile';
+import Login from './components/Login';
+import Feed from './components/Feed';
+import * as Color from './styles/Color';
+import ChatList from './components/ChatList';
+import Chat from './components/Chat';
 // import ChatNavigation from './navigation/ChatNavigation'
 
 const validationSchema = Yup.object().shape({
@@ -32,31 +32,44 @@ const validationSchema = Yup.object().shape({
     .label('Password')
     .required()
     .min(6, 'Password must have at least 6 characters '),
-})
+});
 
 const ErrorMessage = ({ errorValue }) => (
   <View style={styles.errorContainer}>
     <Text style={styles.errorText}>{errorValue}</Text>
   </View>
-)
+);
 
 export default function App() {
-  const authContext = createContext(undefined)
+  const authContext = createContext(undefined);
   // const authenticated = useContext(authContext);
   // const username = useContext(authContext);
-  const [user, setUser] = useState('')
+  const [user, setUser] = useState({
+    rating: 0,
+    lastName: 'Perkins',
+    helpsGiven: 0,
+    createdAt: '2022-08-16T13:29:25.058Z',
+    address: '32 Avinguda Parallel',
+    email: 'richardjperkins89@gmail.com',
+    firstName: 'Richard',
+    gender: 'male',
+    birthdate: '13/06/1989',
+    userId: '422823ec-dca8-4a37-a68c-88b84fc4281e',
+    updatedAt: '2022-08-16T13:29:25.058Z',
+    helpsReceived: 0,
+  });
 
-  const [isNotSignedIn, setIsNotSignedIn] = useState(true)
+  const [isNotSignedIn, setIsNotSignedIn] = useState(true);
 
-  const Tab = createMaterialBottomTabNavigator()
-  const Stack = createNativeStackNavigator()
+  const Tab = createMaterialBottomTabNavigator();
+  const Stack = createNativeStackNavigator();
 
   function FeedScreen() {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <Feed user={user} />
       </View>
-    )
+    );
   }
 
   function ChatListScreen() {
@@ -64,17 +77,35 @@ export default function App() {
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <ChatList user={user} />
       </View>
-    )
+    );
   }
 
   const ChatStackNavigator = () => {
     return (
-      <Stack.Navigator>
-        <Stack.Screen name="ChatList" component={ChatListScreen} />
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <Stack.Screen name="Chats" component={ChatListScreen} />
         <Stack.Screen name="Chat" component={Chat} />
       </Stack.Navigator>
-    )
-  }
+    );
+  };
+
+  const FeedChatNavigator = () => {
+    return (
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}
+        initialRouteName={'FeedNav'}
+      >
+        <Stack.Screen name="FeedNav" component={FeedScreen} />
+        <Stack.Screen name="Chat" component={Chat} />
+      </Stack.Navigator>
+    );
+  };
 
   function LoginScreen() {
     return (
@@ -85,7 +116,7 @@ export default function App() {
           setIsNotSignedIn={setIsNotSignedIn}
         />
       </View>
-    )
+    );
   }
 
   function ProfileScreen() {
@@ -93,7 +124,7 @@ export default function App() {
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <Profile user={user} />
       </View>
-    )
+    );
   }
 
   /* return isNotSignedIn ? (
@@ -110,7 +141,7 @@ export default function App() {
       >
         <Tab.Screen
           name="Feed"
-          component={FeedScreen}
+          component={FeedChatNavigator}
           options={{
             title: 'The Feed',
             tabBarLabel: 'Feed',
@@ -162,7 +193,7 @@ export default function App() {
         />
       </Tab.Navigator>
     </NavigationContainer>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -200,4 +231,4 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#ffffff',
   },
-})
+});

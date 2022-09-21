@@ -5,86 +5,82 @@ import {
   Dimensions,
   FlatList,
   TouchableOpacity,
-} from 'react-native'
+} from 'react-native';
 
-import SafeAreaView from 'react-native-safe-area-view'
-import * as Color from '../styles/Color'
+import SafeAreaView from 'react-native-safe-area-view';
+import * as Color from '../styles/Color';
 
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 
-import Config from '../lib/Config'
-import { useNavigation } from '@react-navigation/native'
+import Config from '../lib/Config';
+import { useNavigation } from '@react-navigation/native';
 
-const ChatList = ({}) => {
-  const [chats, setChats] = useState([])
-  const navigation = useNavigation()
+const ChatList = ({ user }) => {
+  const [chats, setChats] = useState([]);
+  const navigation = useNavigation();
 
   const fetchChats = async () => {
     try {
-      const res = await fetch(
-        `${Config.apiUrl}/chats/422823ec-dca8-4a37-a68c-88b84fc4281e`,
-        {
-          method: 'GET',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-        }
-      )
-      const resJson = await res.json()
-      console.log(resJson)
-      if (res.status === 200) {
-        let json_data = resJson.body
-        setChats(json_data)
-      } else {
-        alert(res.error)
-      }
+      const res = await fetch(`${Config.apiUrl}/chats/${user.userId}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+      const resJson = await res.json();
+      console.log(resJson);
+      const chats = resJson.body;
+      setChats(chats);
     } catch (err) {
-      alert(error)
+      alert(err);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchChats()
-  }, [])
+    fetchChats();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
         data={chats}
-        renderItem={({ item, index }) => (
-          <View style={styles.card}>
-            <Text style={styles.request}>{item.userId1} </Text>
+        renderItem={({ item }) => {
+          return (
+            <View style={styles.card}>
+              <Text style={styles.request}>{item.userId1} </Text>
+              {/* <Text style={styles.message}>
+                {JSON.parse(item.messages)[0].text}{' '}
+              </Text> */}
 
-            <TouchableOpacity
-              style={styles.chat}
-              title="chat"
-              onPress={() =>
-                navigation.navigate('Chat', {
-                  id: item.id,
-                  userId1: item.userId1,
-                  userId2: item.userId2,
-                  msgs: item.messages,
-                })
-              }
-            >
-              <View style={styles.buttons}>
-                <MaterialCommunityIcons
-                  name="forum-outline"
-                  color={Color.GREEN4}
-                  size={30}
-                />
-              </View>
-            </TouchableOpacity>
-          </View>
-        )}
+              <TouchableOpacity
+                style={styles.chat}
+                title="chat"
+                onPress={() =>
+                  navigation.navigate('Chat', {
+                    requestUserId: item.userId,
+                    currentUserId: user.userId,
+                  })
+                }
+              >
+                <View style={styles.buttons}>
+                  <MaterialCommunityIcons
+                    name="forum-outline"
+                    color={Color.GREEN4}
+                    size={30}
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
+          );
+        }}
       />
     </SafeAreaView>
-  )
-}
-export default ChatList
+  );
+};
+export default ChatList;
 
 const styles = StyleSheet.create({
   container: {
@@ -109,6 +105,14 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width - 20,
     borderRadius: 5,
   },
+  message: {
+    display: 'flex',
+    margin: 5,
+    marginBottom: 0,
+    backgroundColor: Color.GREEN2,
+    justifyContent: 'center',
+    color: 'grey',
+  },
   request: {
     display: 'flex',
     alignContent: 'flex-start',
@@ -132,4 +136,4 @@ const styles = StyleSheet.create({
     height: 31,
     borderRadius: 5,
   },
-})
+});

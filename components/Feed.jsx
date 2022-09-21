@@ -10,22 +10,23 @@ import {
   TouchableHighlight,
   TouchableOpacity,
   Alert,
-} from 'react-native'
-import SafeAreaView from 'react-native-safe-area-view'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import * as Location from 'expo-location'
-import React, { useState, useCallback, useEffect } from 'react'
-import DropDownPicker from 'react-native-dropdown-picker'
+} from 'react-native';
+import SafeAreaView from 'react-native-safe-area-view';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import * as Location from 'expo-location';
+import React, { useState, useCallback, useEffect } from 'react';
+import DropDownPicker from 'react-native-dropdown-picker';
+import { useNavigation } from '@react-navigation/native';
 
-import * as Color from '../styles/Color'
-import { Colors } from 'react-native/Libraries/NewAppScreen'
-import { getDistance } from 'geolib'
-import Config from '../lib/Config'
+import * as Color from '../styles/Color';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { getDistance } from 'geolib';
+import Config from '../lib/Config';
 
 const Feed = ({ user }) => {
-  const help = [1, 2, 3, 4]
-  const [categoryOpen, setCategoryOpen] = useState(false)
-  const [categoryValue, setCategoryValue] = useState([])
+  const help = [1, 2, 3, 4];
+  const [categoryOpen, setCategoryOpen] = useState(false);
+  const [categoryValue, setCategoryValue] = useState([]);
   const [categoryItems, setCategoryItems] = useState([
     { label: 'General', value: 'general' },
     { label: 'Athletics', value: 'athletics' },
@@ -36,23 +37,25 @@ const Feed = ({ user }) => {
     { label: 'Kitchen', value: 'kitchen' },
     { label: 'Pet', value: 'pet' },
     { label: 'Technology', value: 'technology' },
-  ])
-  const [radiusOpen, setRadiusOpen] = useState(false)
-  const [radiusValue, setRadiusValue] = useState([])
+  ]);
+  const [radiusOpen, setRadiusOpen] = useState(false);
+  const [radiusValue, setRadiusValue] = useState([]);
   const [radiusItems, setRadiusItems] = useState([
     { label: '5km', value: '5' },
     { label: '15km', value: '15' },
     { label: 'unlimited', value: '0' },
-  ])
-  const [feed, setFeed] = useState([])
-  const [feedDisplay, setFeedDisplay] = useState([])
-  const [refreshing, setRefreshing] = React.useState(false)
-  const [location, setLocation] = useState({})
-  const [errorMsg, setErrorMsg] = useState(null)
+  ]);
+  const [feed, setFeed] = useState([]);
+  const [feedDisplay, setFeedDisplay] = useState([]);
+  const [refreshing, setRefreshing] = React.useState(false);
+  const [location, setLocation] = useState({});
+  const [errorMsg, setErrorMsg] = useState(null);
+
+  const navigation = useNavigation();
 
   const wait = (timeout) => {
-    return new Promise((resolve) => setTimeout(resolve, timeout))
-  }
+    return new Promise((resolve) => setTimeout(resolve, timeout));
+  };
 
   const fetchData = async () => {
     try {
@@ -62,34 +65,34 @@ const Feed = ({ user }) => {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-      })
-      const resJson = await res.json()
+      });
+      const resJson = await res.json();
       if (res.status === 200) {
-        let result = []
-        let json_data = resJson.body
-        setFeed(json_data)
-        setFeedDisplay(feed)
+        let result = [];
+        let json_data = resJson.body;
+        setFeed(json_data);
+        setFeedDisplay(feed);
       } else {
-        alert(resJson.message)
+        alert(resJson.message);
       }
     } catch (err) {
-      alert(err)
+      alert(err);
     }
-  }
+  };
 
   const onRefresh = React.useCallback(() => {
-    setRefreshing(true)
+    setRefreshing(true);
     wait(2000).then(() => {
-      fetchData()
-      setRefreshing(false)
-    })
-  }, [])
+      fetchData();
+      setRefreshing(false);
+    });
+  }, []);
 
   // const currentUserId = "4c6cab21-29cf-4977-a3e8-2beb008c3441";
 
   const acceptById = async (requestId) => {
-    alert(requestId)
-    alert(user)
+    alert(requestId);
+    alert(user);
     try {
       const res = await fetch(`${Config.apiUrl}/requests/${requestId}`, {
         method: 'PUT',
@@ -100,22 +103,22 @@ const Feed = ({ user }) => {
         body: JSON.stringify({
           acceptedUserId: user,
         }),
-      })
-      const resJson = await res.json()
+      });
+      const resJson = await res.json();
       if (res.status === 200) {
-        const cleanedRes = JSON.stringify(resJson)
+        const cleanedRes = JSON.stringify(resJson);
         // const stringified = JSON.stringify(Array(cleanedRes)[0]);
-        alert(cleanedRes)
-        return cleanedRes
+        alert(cleanedRes);
+        return cleanedRes;
       } else {
         // setResult("empty");
-        alert(resJson.message)
+        alert(resJson.message);
       }
     } catch (err) {
       // setResult("error");
-      alert(err)
+      alert(err);
     }
-  }
+  };
 
   const createConfirmationAlert = (requestId) =>
     Alert.alert(
@@ -129,40 +132,40 @@ const Feed = ({ user }) => {
         },
         { text: 'OK', onPress: () => acceptById(requestId) },
       ]
-    )
+    );
 
   const onCategoryOpen = useCallback(() => {
-    setRadiusOpen(false)
-  }, [])
+    setRadiusOpen(false);
+  }, []);
 
   const onRadiusOpen = useCallback(() => {
-    setCategoryOpen(false)
-  }, [])
+    setCategoryOpen(false);
+  }, []);
 
-  DropDownPicker.setMode('BADGE')
-
-  useEffect(() => {
-    fetchData()
-  }, [])
+  DropDownPicker.setMode('BADGE');
 
   useEffect(() => {
-    ;(async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync()
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied')
-        return
+        setErrorMsg('Permission to access location was denied');
+        return;
       }
 
-      let location = await Location.getCurrentPositionAsync({})
-      setLocation(location)
-    })()
-  }, [])
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+    })();
+  }, []);
 
-  let text = 'Waiting..'
+  let text = 'Waiting..';
   if (errorMsg) {
-    text = errorMsg
+    text = errorMsg;
   } else if (location) {
-    text = JSON.stringify(location)
+    text = JSON.stringify(location);
   }
 
   return (
@@ -193,7 +196,7 @@ const Feed = ({ user }) => {
             // zIndex: -1,
           }}
           onChangeValue={(value) => {
-            console.log(categoryValue)
+            console.log(categoryValue);
             // console.log(categoryValue);
             // for (const v of value) {
             //   console.log(v);
@@ -201,9 +204,9 @@ const Feed = ({ user }) => {
             if (categoryValue.length) {
               setFeedDisplay(
                 feed.filter((item) => categoryValue.includes(item.category))
-              )
+              );
             } else {
-              setFeedDisplay(feed)
+              setFeedDisplay(feed);
             }
 
             // console.log(feed.filter((i) => i.category === value));
@@ -229,12 +232,12 @@ const Feed = ({ user }) => {
             width: Dimensions.get('window').width / 3,
           }}
           onChangeValue={(value) => {
-            alert(value)
-            console.log(radiusValue)
-            const filteredFeed = feed
+            alert(value);
+            console.log(radiusValue);
+            const filteredFeed = feed;
             setFeedDisplay(
               feed.filter((item) => item.category === 'ELECTRONICS')
-            )
+            );
           }}
           onOpen={onRadiusOpen}
           placeholder="Radius"
@@ -247,7 +250,7 @@ const Feed = ({ user }) => {
           {feedItem.acceptedUserId || "no one"}
         </Text>
       ))} */}
-      {/* <Text>CURRENT USER: {user}</Text> */}
+      <Text>CURRENT USER: {user.userId}</Text>
       <FlatList
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -315,7 +318,12 @@ const Feed = ({ user }) => {
               <TouchableOpacity
                 style={styles.chat}
                 title="chat"
-                onPress={() => console.log(item.requestId)}
+                onPress={() =>
+                  navigation.navigate('Chat', {
+                    requestUserId: item.userId,
+                    currentUserId: user.userId,
+                  })
+                }
               >
                 <MaterialCommunityIcons
                   name="forum-outline"
@@ -331,9 +339,9 @@ const Feed = ({ user }) => {
 
       {/* expanded: location, photos3Url, userId */}
     </SafeAreaView>
-  )
-}
-export default Feed
+  );
+};
+export default Feed;
 
 const styles = StyleSheet.create({
   container: {
@@ -395,4 +403,4 @@ const styles = StyleSheet.create({
     height: 31,
     borderRadius: 5,
   },
-})
+});

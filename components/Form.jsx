@@ -7,16 +7,16 @@ import {
   TextInput,
   StyleSheet,
   Dimensions,
-} from 'react-native'
-import React, { useState, useEffect } from 'react'
-import { Picker } from '@react-native-picker/picker'
-import RNPickerSelect from 'react-native-picker-select'
-import * as Location from 'expo-location'
+} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Picker } from '@react-native-picker/picker';
+import RNPickerSelect from 'react-native-picker-select';
+import * as Location from 'expo-location';
 
-import { Formik } from 'formik'
-import * as Yup from 'yup'
-import * as Color from '../styles/Color'
-import Config from '../lib/Config'
+import { Formik } from 'formik';
+import * as Yup from 'yup';
+import * as Color from '../styles/Color';
+import Config from '../lib/Config';
 
 const validationSchema = Yup.object().shape({
   title: Yup.string()
@@ -29,20 +29,20 @@ const validationSchema = Yup.object().shape({
     .required('Enter a valid request')
     .min(10, 'Min length: 10 chars')
     .max(350, 'Max length: 350 chars'),
-})
+});
 
 const ErrorMessage = ({ errorValue }) => (
   <View style={styles.errorContainer}>
     <Text style={styles.errorText}>{errorValue}</Text>
   </View>
-)
+);
 
 export default function Form({}) {
-  const [selectedCategory, setSelectedCategory] = useState('general')
-  const [selectedDistance, setSelectedDistance] = useState('5')
-  const [getHelpActive, setGetHelpActive] = useState(true)
-  const [location, setLocation] = useState(null)
-  const [errorMsg, setErrorMsg] = useState(null)
+  const [selectedCategory, setSelectedCategory] = useState('general');
+  const [selectedDistance, setSelectedDistance] = useState('5');
+  const [getHelpActive, setGetHelpActive] = useState(true);
+  const [location, setLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
 
   // function onSubmitHandler(values) {
   //   const { title, description, category, distance } = values;
@@ -55,23 +55,23 @@ export default function Form({}) {
   // }
 
   useEffect(() => {
-    ;(async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync()
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied')
-        return
+        setErrorMsg('Permission to access location was denied');
+        return;
       }
 
-      let location = await Location.getCurrentPositionAsync({})
-      setLocation(location)
-    })()
-  }, [])
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+    })();
+  }, []);
 
-  let text = 'Waiting..'
+  let text = 'Waiting..';
   if (errorMsg) {
-    text = errorMsg
+    text = errorMsg;
   } else if (location) {
-    text = JSON.stringify(location)
+    text = JSON.stringify(location);
   }
 
   const onSubmitHandler = async ({
@@ -88,7 +88,7 @@ export default function Form({}) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userId: 'ginny.rae@hotmail.com',
+          userId: user,
           request: title,
           description: description,
           give: getHelpActive,
@@ -100,24 +100,24 @@ export default function Form({}) {
         //   email: email1,
         //   password: password1,
         // }),
-      })
-      const resJson = await res.json()
+      });
+      const resJson = await res.json();
       if (res.status === 200) {
-        const cleanedRes = JSON.stringify(resJson)
+        const cleanedRes = JSON.stringify(resJson);
         // const stringified = JSON.stringify(Array(cleanedRes)[0]);
-        alert(cleanedRes)
-        return cleanedRes
+        alert(cleanedRes);
+        return cleanedRes;
       } else {
         // setResult("empty");
-        alert(res.message)
+        alert(res.message);
       }
     } catch (err) {
       // setResult("error");
-      alert(err)
+      alert(err);
     }
-  }
+  };
 
-  console.log(text)
+  console.log(text);
 
   return (
     <ScrollView>
@@ -161,7 +161,7 @@ export default function Form({}) {
             distance: selectedDistance,
           }}
           onSubmit={(values, actions) => {
-            onSubmitHandler(values, actions)
+            onSubmitHandler(values, actions);
           }}
           validationSchema={validationSchema}
         >
@@ -222,8 +222,8 @@ export default function Form({}) {
               </Picker> */}
               <RNPickerSelect
                 onValueChange={(value) => {
-                  setSelectedCategory(value)
-                  console.log(selectedCategory)
+                  setSelectedCategory(value);
+                  console.log(selectedCategory);
                 }}
                 selectedValue={values.category}
                 items={[
@@ -259,7 +259,7 @@ export default function Form({}) {
         </Formik>
       </View>
     </ScrollView>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -343,4 +343,4 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
   },
-})
+});

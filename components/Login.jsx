@@ -7,15 +7,15 @@ import {
   TextInput,
   StyleSheet,
   Dimensions,
-} from 'react-native'
+} from 'react-native';
 
-import React, { useState, useContext } from 'react'
-import jwt_decode from 'jwt-decode'
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
-import { Formik } from 'formik'
-import * as Yup from 'yup'
-import * as Color from '../styles/Color'
-import Config from '../lib/Config'
+import React, { useState, useContext } from 'react';
+import jwt_decode from 'jwt-decode';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import { Formik } from 'formik';
+import * as Yup from 'yup';
+import * as Color from '../styles/Color';
+import Config from '../lib/Config';
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -38,17 +38,17 @@ const validationSchema = Yup.object().shape({
   // gender: Yup.string().label("Gender").required(),
   // address: Yup.string().label("Address").required(),
   // birthdate: Yup.string().label("Birthdate").required(),
-})
+});
 
 const ErrorMessage = ({ errorValue }) => (
   <View style={styles.errorContainer}>
     <Text style={styles.errorText}>{errorValue}</Text>
   </View>
-)
+);
 
-export default function Login({ user, setUser, setIsNotSignedIn }) {
+export default function Login({ setUser, setIsNotSignedIn }) {
   // const { signIn } = useContext(AuthContext);
-  const [loginActive, setLoginActive] = useState(true)
+  const [loginActive, setLoginActive] = useState(true);
 
   const callLogin = async (email, password) => {
     try {
@@ -58,31 +58,27 @@ export default function Login({ user, setUser, setIsNotSignedIn }) {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        // body: JSON.stringify({
-        //   email: "ginny.rae@hotmail.com",
-        //   password: "Help123!",
-        // }),
         body: JSON.stringify({
-          email: email, //"richardjperkins89@gmail.com",
-          password: password, //"rrrRRR1!",
+          email: email,
+          password: password,
         }),
-      })
-      const resJson = await res.json()
+      });
+      const resJson = await res.json();
       if (res.status === 200) {
-        const userToken = jwt_decode(resJson.idToken).sub
+        const userToken = jwt_decode(resJson.idToken).sub;
         // const stringified = JSON.stringify(Array(userToken)[0]);
-        setUser(userToken)
-        setIsNotSignedIn(false)
-        return userToken
+        setUser(userToken);
+        setIsNotSignedIn(false);
+        return userToken;
       } else {
         // setResult("empty");
-        alert(res.message)
+        alert(res.message);
       }
     } catch (err) {
       // setResult("error");
-      alert(err)
+      alert(err);
     }
-  }
+  };
 
   const callSignup = async (
     email,
@@ -109,40 +105,44 @@ export default function Login({ user, setUser, setIsNotSignedIn }) {
           birthdate: birthdate,
           password: password,
         }),
-        // body: JSON.stringify({
-        //   email: email1,
-        //   password: password1,
-        // }),
-      })
-      const resJson = await res.json()
+      });
+      const resJson = await res.json();
       if (res.status === 200) {
-        const cleanedRes = JSON.stringify(resJson)
+        const cleanedRes = JSON.stringify(resJson);
         // const stringified = JSON.stringify(Array(cleanedRes)[0]);
-        return cleanedRes
+        return cleanedRes;
       } else {
         // setResult("empty");
-        alert(resJson.body)
+        alert(resJson.body);
       }
     } catch (err) {
       // setResult("error");
-      alert(err)
+      alert(err);
     }
-  }
+  };
 
   function onLoginHandler(values) {
-    const { email, password } = values
-    callLogin(email, password)
+    const { email, password } = values;
+    callLogin(email, password);
     // alert(`Credentials entered. email: ${email}, password: ${password}`);
   }
 
   function onSignupHandler(values) {
     const { email, firstName, lastName, gender, address, birthdate, password } =
-      values
+      values;
     // alert(
     //   `Credentials entered. email: ${email}, password: ${password}, b ${birthdate}, a ${address} f ${firstName} l ${lastName}`
     // );
 
-    callSignup(email, firstName, lastName, gender, address, birthdate, password)
+    callSignup(
+      email,
+      firstName,
+      lastName,
+      gender,
+      address,
+      birthdate,
+      password
+    );
   }
 
   return (
@@ -184,7 +184,7 @@ export default function Login({ user, setUser, setIsNotSignedIn }) {
             password: '',
           }}
           onSubmit={(values, actions) => {
-            onLoginHandler(values, actions)
+            onLoginHandler(values, actions);
           }}
           validationSchema={validationSchema}
         >
@@ -241,7 +241,7 @@ export default function Login({ user, setUser, setIsNotSignedIn }) {
             password: '',
           }}
           onSubmit={(values, actions) => {
-            onSignupHandler(values, actions)
+            onSignupHandler(values, actions);
           }}
           validationSchema={validationSchema}
         >
@@ -344,7 +344,7 @@ export default function Login({ user, setUser, setIsNotSignedIn }) {
         </Formik>
       )}
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -414,4 +414,4 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#ffffff',
   },
-})
+});

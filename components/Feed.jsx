@@ -88,8 +88,6 @@ const Feed = ({ user }) => {
     });
   }, []);
 
-  // const currentUserId = "4c6cab21-29cf-4977-a3e8-2beb008c3441";
-
   const acceptById = async (requestId) => {
     alert(requestId);
     alert(user);
@@ -250,7 +248,7 @@ const Feed = ({ user }) => {
           {feedItem.acceptedUserId || "no one"}
         </Text>
       ))} */}
-      <Text>CURRENT USER: {user.userId}</Text>
+      <Text>CURRENT USER: {user}</Text>
       <FlatList
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -315,22 +313,24 @@ const Feed = ({ user }) => {
               ) : (
                 <></>
               )}
-              <TouchableOpacity
-                style={styles.chat}
-                title="chat"
-                onPress={() =>
-                  navigation.navigate('Chat', {
-                    requestUserId: item.userId,
-                    currentUserId: user.userId,
-                  })
-                }
-              >
-                <MaterialCommunityIcons
-                  name="forum-outline"
-                  color={Color.GREEN4}
-                  size={30}
-                />
-              </TouchableOpacity>
+              {item.userId !== user ? (
+                <TouchableOpacity
+                  style={styles.chat}
+                  title="chat"
+                  onPress={() =>
+                    navigation.navigate('Chat', {
+                      requestUserId: item.userId,
+                      currentUserId: user,
+                    })
+                  }
+                >
+                  <MaterialCommunityIcons
+                    name="forum-outline"
+                    color={Color.GREEN4}
+                    size={30}
+                  />
+                </TouchableOpacity>
+              ) : undefined}
             </View>
           </View>
         )}

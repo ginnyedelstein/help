@@ -2,33 +2,41 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { GiftedChat } from 'react-native-gifted-chat';
 import Config from '../lib/Config';
 import { v4 as uuid } from 'uuid';
+// import { SafeAreaView, Text, StyleSheet, View } from 'react-native';
 
 const Chat = ({ route }) => {
   const { requestUserId, currentUserId } = route.params;
 
-  // const [chat, setChat] = useState({})
+  // const [user2, setUser2] = useState({});
   const [messages, setMessages] = useState([]);
   const ws = useRef(null);
 
-  const fetchUser2 = async () => {
-    try {
-      const res = await fetch(`${Config.apiUrl}/users/${requestUserId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      const resJson = await res.json();
-      if (res.status === 200) {
-        let json_data = resJson.body;
-        setUser2(json_data);
-      } else {
-        alert(res.error);
-      }
-    } catch (err) {
-      alert(err.message);
-    }
-  };
+  if (!requestUserId) {
+    alert('requestUserId not defined');
+  }
+  if (!currentUserId) {
+    alert('currentUserId not defined');
+  }
+
+  // const fetchUser2 = async () => {
+  //   try {
+  //     const res = await fetch(`${Config.apiUrl}/users/${requestUserId}`, {
+  //       method: 'GET',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //     });
+  //     const resJson = await res.json();
+  //     if (res.status === 200) {
+  //       let json_data = resJson.body;
+  //       setUser2(json_data);
+  //     } else {
+  //       alert(res.error);
+  //     }
+  //   } catch (err) {
+  //     alert(err.message);
+  //   }
+  // };
 
   const fetchChat = async () => {
     try {
@@ -50,6 +58,7 @@ const Chat = ({ route }) => {
   };
 
   useEffect(() => {
+    // fetchUser2();
     // enter your websocket url
     ws.current = new WebSocket(
       `${Config.webSocketUrl}?userId1=${requestUserId}&userId2=${currentUserId}`
@@ -59,6 +68,9 @@ const Chat = ({ route }) => {
     };
     ws.current.onclose = () => {
       console.log('connection establish closed');
+      return (ws.current = new WebSocket(
+        `${Config.webSocketUrl}?userId1=${requestUserId}&userId2=${currentUserId}`
+      ));
     };
     return () => {
       ws.current.close();
@@ -118,6 +130,7 @@ const Chat = ({ route }) => {
 
   return (
     <GiftedChat
+      wrapInSafeArea={true}
       messages={messages}
       onSend={(message) => onSend(message)}
       user={{

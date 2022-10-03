@@ -23,7 +23,7 @@ const ChatList = ({ user }) => {
 
   const fetchChats = async () => {
     try {
-      const res = await fetch(`${Config.apiUrl}/chats/${user.userId}`, {
+      const res = await fetch(`${Config.apiUrl}/chats/${user}`, {
         method: 'GET',
         headers: {
           Accept: 'application/json',
@@ -46,11 +46,14 @@ const ChatList = ({ user }) => {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        data={chats}
+        data={chats.map((chat) => {
+          return { ...chat, key: chat.id };
+        })}
         renderItem={({ item }) => {
           return (
             <View style={styles.card}>
               <Text style={styles.request}>{item.userId1} </Text>
+              <Text style={styles.request}>{item.userId2} </Text>
               {/* <Text style={styles.message}>
                 {JSON.parse(item.messages)[0].text}{' '}
               </Text> */}
@@ -60,8 +63,9 @@ const ChatList = ({ user }) => {
                 title="chat"
                 onPress={() =>
                   navigation.navigate('Chat', {
-                    requestUserId: item.userId,
-                    currentUserId: user.userId,
+                    requestUserId:
+                      item.userId1 === user ? item.userId2 : item.userId1,
+                    currentUserId: user,
                   })
                 }
               >

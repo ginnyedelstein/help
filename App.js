@@ -127,10 +127,17 @@ export default function App() {
     );
   }
 
-  /* return isNotSignedIn ? (
+  function FormScreen() {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Form user={user} />
+      </View>
+    );
+  }
+
+  return isNotSignedIn ? (
     <Login setUser={setUser} user={user} setIsNotSignedIn={setIsNotSignedIn} />
-  ) : ( */
-  return (
+  ) : (
     <NavigationContainer>
       <Tab.Navigator
         initialRouteName="Feed"
@@ -152,7 +159,7 @@ export default function App() {
         />
         <Tab.Screen
           name="Help"
-          component={Form}
+          component={FormScreen}
           options={{
             title: 'Get/Give Help',
             tabBarLabel: 'Get/Give Help',

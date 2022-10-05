@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Dimensions,
 } from "react-native";
+
 import React, { useState, useContext } from "react";
 import jwt_decode from "jwt-decode";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
@@ -23,7 +24,19 @@ const validationSchema = Yup.object().shape({
   password: Yup.string()
     .label("Password")
     .required()
-    .min(6, "Password must have at least 6 characters "),
+    .min(8, "Password must have at least 8 characters ")
+    .matches(
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+      "Password must include uppercase, lowercase, number and special characters"
+    ),
+  // firstName: Yup.string().label("First Name").required(),
+  // lastName: Yup.string()
+  //   .label("Last Name")
+  //   .required()
+  //   .min(2, "Last Name must have at least 2 characters "),
+  // gender: Yup.string().label("Gender").required(),
+  // address: Yup.string().label("Address").required(),
+  // birthdate: Yup.string().label("Birthdate").required(),
 });
 
 const ErrorMessage = ({ errorValue }) => (
@@ -322,6 +335,16 @@ export default function Login({ user, setUser, setIsNotSignedIn }) {
                 autoCapitalize="none"
                 onBlur={handleBlur("birthdate")}
               />
+
+              {/* <DatePicker
+                style={styles.input}
+                selected={values.birthdate}
+                value={values.birthdate}
+                dateFormat="MMMM d, yyyy"
+                className="form-control"
+                name="birthdate"
+                onChange={(date) => setFieldValue("birthdate", date)}
+              /> */}
 
               <TouchableOpacity
                 onPress={handleSubmit}

@@ -5,7 +5,7 @@ import Login from "./Login";
 
 const Profile = ({ user }) => {
   const [userData, setUserData] = useState({});
-  const userName = user.replaceAll('"', "");
+  const userName = user.replace(/"/g, "");
   const lnk = `https://yl2dnogf69.execute-api.us-east-1.amazonaws.com/users/83a6b4bd-9975-42ba-987d-e12d031a80b0`;
   const fetchUser = async () => {
     try {
@@ -53,7 +53,9 @@ const Profile = ({ user }) => {
       <Text />
 
       <Text>{userData[0] ? userData[0]["helpsGiven"] : "0"} helps given</Text>
-      <Text>{userData[0] ? userData[0]["helpsReceived"] : "0"} helps received</Text>
+      <Text>
+        {userData[0] ? userData[0]["helpsReceived"] : "0"} helps received
+      </Text>
       <Text />
       <Text>{userData[0] ? userData[0]["gender"] : ""}</Text>
       <Text>{userData[0] ? userData[0]["address"] : ""}</Text>

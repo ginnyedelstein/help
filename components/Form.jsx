@@ -8,8 +8,10 @@ import {
   StyleSheet,
   Dimensions,
 } from "react-native";
-import React, { useState } from "react";
-import { Picker } from "@react-native-picker/picker";
+import React, { useState, useEffect } from "react";
+// import { Picker } from "@react-native-picker/picker";
+import RNPickerSelect from "react-native-picker-select";
+import * as Location from "expo-location";
 
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -38,6 +40,8 @@ export default function Form({}) {
   const [selectedCategory, setSelectedCategory] = useState("general");
   const [selectedDistance, setSelectedDistance] = useState("5");
   const [getHelpActive, setGetHelpActive] = useState(true);
+  const [location, setLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
 
   // function onSubmitHandler(values) {
   //   const { title, description, category, distance } = values;
@@ -49,6 +53,26 @@ export default function Form({}) {
   //   );
   // }
 
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        setErrorMsg("Permission to access location was denied");
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+    })();
+  }, []);
+
+  let text = "Waiting..";
+  if (errorMsg) {
+    text = errorMsg;
+  } else if (location) {
+    text = JSON.stringify(location);
+  }
+
   const onSubmitHandler = async ({
     title,
     description,
@@ -56,6 +80,7 @@ export default function Form({}) {
     distance,
   }) => {
     try {
+      console.log(location.coords);
       const res = await fetch(
         `https://yl2dnogf69.execute-api.us-east-1.amazonaws.com/requests`,
         {
@@ -70,7 +95,7 @@ export default function Form({}) {
             description: description,
             give: getHelpActive,
             category: category,
-            location: "tbd",
+            location: `${location.coords.latitude}, ${location.coords.longitude}`,
             photoS3Url: "",
           }),
           // body: JSON.stringify({
@@ -94,6 +119,8 @@ export default function Form({}) {
       alert(err);
     }
   };
+
+  console.log(text);
 
   return (
     <ScrollView>
@@ -133,8 +160,8 @@ export default function Form({}) {
           initialValues={{
             title: "",
             description: "",
-            category: "general",
-            distance: "5",
+            category: selectedCategory,
+            distance: selectedDistance,
           }}
           onSubmit={(values, actions) => {
             onSubmitHandler(values, actions);
@@ -174,12 +201,13 @@ export default function Form({}) {
                 errorValue={touched.description && errors.description}
               />
               <Text>select category</Text>
-              <Picker
+              {/* <Picker
                 selectedValue={selectedCategory}
                 value={values.category}
                 onBlur={handleBlur("category")}
                 onValueChange={(value, index) => {
                   setSelectedCategory(value);
+                  console.log(value);
                   handleChange("category");
                 }}
                 mode="dropdown" // Android only
@@ -194,9 +222,21 @@ export default function Form({}) {
                 <Picker.Item label="Kitchen" value="kitchen" />
                 <Picker.Item label="Pet" value="pet" />
                 <Picker.Item label="Technology" value="technology" />
-              </Picker>
-              <Text>select help radius</Text>
-              <Picker
+              </Picker> */}
+              <RNPickerSelect
+                onValueChange={(value) => {
+                  setSelectedCategory(value);
+                  console.log(selectedCategory);
+                }}
+                selectedValue={values.category}
+                items={[
+                  { label: "General", value: "general" },
+                  { label: "Athletics", value: "athletics" },
+                  { label: "Children", value: "children" },
+                ]}
+              />
+              {/* <Text>select help radius</Text> */}
+              {/* <Picker
                 value={values.distance}
                 selectedValue={selectedDistance}
                 onBlur={handleBlur("distance")}
@@ -210,7 +250,7 @@ export default function Form({}) {
                 <Picker.Item label="5km" value="15" />
                 <Picker.Item label="50km" value="50" />
                 <Picker.Item label="unlimited" value="ulimited" />
-              </Picker>
+              </Picker> */}
               <TouchableOpacity
                 onPress={handleSubmit}
                 style={styles.buttonContainer}

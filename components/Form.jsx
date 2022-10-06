@@ -7,28 +7,28 @@ import {
   TextInput,
   StyleSheet,
   Dimensions,
-} from 'react-native';
-import React, { useState, useEffect } from 'react';
-import { Picker } from '@react-native-picker/picker';
-import RNPickerSelect from 'react-native-picker-select';
-import * as Location from 'expo-location';
+} from "react-native";
+import React, { useState, useEffect } from "react";
+import { Picker } from "@react-native-picker/picker";
+import RNPickerSelect from "react-native-picker-select";
+import * as Location from "expo-location";
 
-import { Formik } from 'formik';
-import * as Yup from 'yup';
-import * as Color from '../styles/Color';
-import Config from '../lib/Config';
+import { Formik } from "formik";
+import * as Yup from "yup";
+import * as Color from "../styles/Color";
+import Config from "../lib/Config";
 
 const validationSchema = Yup.object().shape({
   title: Yup.string()
-    .label('GetHelp')
-    .required('Enter a valid request')
-    .min(3, 'Min length: 3 chars')
-    .max(50, 'Max length: 50 chars'),
+    .label("GetHelp")
+    .required("Enter a valid request")
+    .min(3, "Min length: 3 chars")
+    .max(50, "Max length: 50 chars"),
   description: Yup.string()
-    .label('GetHelp')
-    .required('Enter a valid request')
-    .min(10, 'Min length: 10 chars')
-    .max(350, 'Max length: 350 chars'),
+    .label("GetHelp")
+    .required("Enter a valid request")
+    .min(10, "Min length: 10 chars")
+    .max(350, "Max length: 350 chars"),
 });
 
 const ErrorMessage = ({ errorValue }) => (
@@ -37,9 +37,9 @@ const ErrorMessage = ({ errorValue }) => (
   </View>
 );
 
-export default function Form({}) {
-  const [selectedCategory, setSelectedCategory] = useState('general');
-  const [selectedDistance, setSelectedDistance] = useState('5');
+export default function Form({ user }) {
+  const [selectedCategory, setSelectedCategory] = useState("general");
+  const [selectedDistance, setSelectedDistance] = useState("5");
   const [getHelpActive, setGetHelpActive] = useState(true);
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
@@ -57,8 +57,8 @@ export default function Form({}) {
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
+      if (status !== "granted") {
+        setErrorMsg("Permission to access location was denied");
         return;
       }
 
@@ -67,7 +67,7 @@ export default function Form({}) {
     })();
   }, []);
 
-  let text = 'Waiting..';
+  let text = "Waiting..";
   if (errorMsg) {
     text = errorMsg;
   } else if (location) {
@@ -82,10 +82,10 @@ export default function Form({}) {
   }) => {
     try {
       const res = await fetch(`${Config.apiUrl}/requests`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           userId: user,
@@ -94,7 +94,7 @@ export default function Form({}) {
           give: getHelpActive,
           category: category,
           location: `${location.coords.latitude}, ${location.coords.longitude}`,
-          photoS3Url: '',
+          photoS3Url: "",
         }),
         // body: JSON.stringify({
         //   email: email1,
@@ -155,8 +155,8 @@ export default function Form({}) {
         {getHelpActive ? <Text>get help</Text> : <Text>give help</Text>}
         <Formik
           initialValues={{
-            title: '',
-            description: '',
+            title: "",
+            description: "",
             category: selectedCategory,
             distance: selectedDistance,
           }}
@@ -179,9 +179,9 @@ export default function Form({}) {
                 numberOfLines={2}
                 value={values.title}
                 placeholder="Enter post title"
-                onChangeText={handleChange('title')}
+                onChangeText={handleChange("title")}
                 autoCapitalize="none"
-                onBlur={handleBlur('title')}
+                onBlur={handleBlur("title")}
               />
               <ErrorMessage errorValue={touched.title && errors.title} />
               <TextInput
@@ -190,9 +190,9 @@ export default function Form({}) {
                 numberOfLines={1}
                 value={values.description}
                 placeholder="Enter description"
-                onChangeText={handleChange('description')}
+                onChangeText={handleChange("description")}
                 autoCapitalize="none"
-                onBlur={handleBlur('description')}
+                onBlur={handleBlur("description")}
               />
               <ErrorMessage
                 errorValue={touched.description && errors.description}
@@ -201,7 +201,7 @@ export default function Form({}) {
               {/* <Picker
                 selectedValue={selectedCategory}
                 value={values.category}
-                onBlur={handleBlur('category')}
+                onBlur={handleBlur("category")}
                 onValueChange={(value, index) => {
                   setSelectedCategory(value);
                   console.log(value);
@@ -227,19 +227,19 @@ export default function Form({}) {
                 }}
                 selectedValue={values.category}
                 items={[
-                  { label: 'General', value: 'general' },
-                  { label: 'Athletics', value: 'athletics' },
-                  { label: 'Children', value: 'children' },
+                  { label: "General", value: "general" },
+                  { label: "Athletics", value: "athletics" },
+                  { label: "Children", value: "children" },
                 ]}
               />
               {/* <Text>select help radius</Text> */}
               {/* <Picker
                 value={values.distance}
                 selectedValue={selectedDistance}
-                onBlur={handleBlur('distance')}
+                onBlur={handleBlur("distance")}
                 onValueChange={(value, index) => {
                   setSelectedDistance(value);
-                  handleChange('distance');
+                  handleChange("distance");
                 }}
                 mode="dropdown" // Android only
                 style={styles.picker}
@@ -267,16 +267,16 @@ const styles = StyleSheet.create({
     marginVertical: 3,
   },
   errorText: {
-    color: 'red',
+    color: "red",
   },
   container: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 40,
   },
   input: {
     marginVertical: 10,
-    width: Dimensions.get('window').width - 100,
+    width: Dimensions.get("window").width - 100,
     height: 40,
     borderWidth: 1,
     padding: 10,
@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
   },
   largeInput: {
     marginVertical: 10,
-    width: Dimensions.get('window').width - 100,
+    width: Dimensions.get("window").width - 100,
     height: 80,
     borderWidth: 1,
     padding: 10,
@@ -292,53 +292,53 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginVertical: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 10,
-    width: Dimensions.get('window').width - 200,
+    width: Dimensions.get("window").width - 200,
     height: 44,
     borderRadius: 5,
-    backgroundColor: '#343434',
+    backgroundColor: "#343434",
   },
   button2Container: {
     margin: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 10,
-    width: Dimensions.get('window').width / 3,
+    width: Dimensions.get("window").width / 3,
     height: 44,
     borderRadius: 5,
     backgroundColor: Color.GREEN3,
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   button2ContainerActive: {
     margin: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 10,
-    width: Dimensions.get('window').width / 3,
+    width: Dimensions.get("window").width / 3,
     height: 44,
     borderRadius: 5,
     backgroundColor: Color.GREEN4,
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   button2Wrapper: {
     marginVertical: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 10,
-    width: Dimensions.get('window').width / 3,
+    width: Dimensions.get("window").width / 3,
     height: 44,
     borderRadius: 5,
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   buttonText: {
     fontSize: 18,
-    color: '#ffffff',
+    color: "#ffffff",
   },
   picker: {
     marginVertical: 5,
-    width: Dimensions.get('window').width - 100,
+    width: Dimensions.get("window").width - 100,
     padding: 0,
     borderWidth: 1,
     borderRadius: 5,

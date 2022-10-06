@@ -7,28 +7,28 @@ import {
   TextInput,
   StyleSheet,
   Dimensions,
-} from 'react-native';
+} from "react-native";
 
-import React, { useState, useContext } from 'react';
-import jwt_decode from 'jwt-decode';
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import { Formik } from 'formik';
-import * as Yup from 'yup';
-import * as Color from '../styles/Color';
-import Config from '../lib/Config';
+import React, { useState, useContext } from "react";
+import jwt_decode from "jwt-decode";
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import { Formik } from "formik";
+import * as Yup from "yup";
+import * as Color from "../styles/Color";
+import Config from "../lib/Config";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
-    .label('Email')
-    .email('Enter a valid email')
-    .required('Please enter a registered email'),
+    .label("Email")
+    .email("Enter a valid email")
+    .required("Please enter a registered email"),
   password: Yup.string()
-    .label('Password')
+    .label("Password")
     .required()
-    .min(8, 'Password must have at least 8 characters ')
+    .min(8, "Password must have at least 8 characters ")
     .matches(
       /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
-      'Password must include uppercase, lowercase, number and special characters'
+      "Password must include uppercase, lowercase, number and special characters"
     ),
   // firstName: Yup.string().label("First Name").required(),
   // lastName: Yup.string()
@@ -53,10 +53,10 @@ export default function Login({ setUser, setIsNotSignedIn }) {
   const callLogin = async (email, password) => {
     try {
       const res = await fetch(`${Config.apiUrl}/sign-in`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email: email,
@@ -91,10 +91,10 @@ export default function Login({ setUser, setIsNotSignedIn }) {
   ) => {
     try {
       const res = await fetch(`${Config.apiUrl}/users`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email: email,
@@ -180,8 +180,8 @@ export default function Login({ setUser, setIsNotSignedIn }) {
       {loginActive ? (
         <Formik
           initialValues={{
-            email: '',
-            password: '',
+            email: "",
+            password: "",
           }}
           onSubmit={(values, actions) => {
             onLoginHandler(values, actions);
@@ -202,11 +202,11 @@ export default function Login({ setUser, setIsNotSignedIn }) {
                 numberOfLines={1}
                 value={values.email}
                 placeholder="Enter email"
-                onChangeText={handleChange('email')}
+                onChangeText={handleChange("email")}
                 autoCapitalize="none"
                 autoCompleteType="email"
                 keyboardType="email-address"
-                onBlur={handleBlur('email')}
+                onBlur={handleBlur("email")}
               />
               <ErrorMessage errorValue={touched.email && errors.email} />
               <TextInput
@@ -214,9 +214,9 @@ export default function Login({ setUser, setIsNotSignedIn }) {
                 numberOfLines={1}
                 value={values.password}
                 placeholder="Enter password"
-                onChangeText={handleChange('password')}
+                onChangeText={handleChange("password")}
                 autoCapitalize="none"
-                onBlur={handleBlur('password')}
+                onBlur={handleBlur("password")}
                 secureTextEntry={true}
               />
               <ErrorMessage errorValue={touched.password && errors.password} />
@@ -232,13 +232,13 @@ export default function Login({ setUser, setIsNotSignedIn }) {
       ) : (
         <Formik
           initialValues={{
-            email: '',
-            firstName: '',
-            lastName: '',
-            gender: '',
-            address: '',
-            birthdate: '',
-            password: '',
+            email: "",
+            firstName: "",
+            lastName: "",
+            gender: "",
+            address: "",
+            birthdate: "",
+            password: "",
           }}
           onSubmit={(values, actions) => {
             onSignupHandler(values, actions);
@@ -259,11 +259,11 @@ export default function Login({ setUser, setIsNotSignedIn }) {
                 numberOfLines={1}
                 value={values.email}
                 placeholder="Enter email"
-                onChangeText={handleChange('email')}
+                onChangeText={handleChange("email")}
                 autoCapitalize="none"
                 autoCompleteType="email"
                 keyboardType="email-address"
-                onBlur={handleBlur('email')}
+                onBlur={handleBlur("email")}
               />
               <ErrorMessage errorValue={touched.email && errors.email} />
               <TextInput
@@ -271,9 +271,9 @@ export default function Login({ setUser, setIsNotSignedIn }) {
                 numberOfLines={1}
                 value={values.password}
                 placeholder="Enter password"
-                onChangeText={handleChange('password')}
+                onChangeText={handleChange("password")}
                 autoCapitalize="none"
-                onBlur={handleBlur('password')}
+                onBlur={handleBlur("password")}
                 secureTextEntry={true}
               />
               <ErrorMessage errorValue={touched.password && errors.password} />
@@ -282,45 +282,45 @@ export default function Login({ setUser, setIsNotSignedIn }) {
                 numberOfLines={1}
                 value={values.firstName}
                 placeholder="Enter first name"
-                onChangeText={handleChange('firstName')}
+                onChangeText={handleChange("firstName")}
                 autoCapitalize="none"
-                onBlur={handleBlur('firstName')}
+                onBlur={handleBlur("firstName")}
               />
               <TextInput
                 style={styles.input}
                 numberOfLines={1}
                 value={values.lastName}
                 placeholder="Enter last name"
-                onChangeText={handleChange('lastName')}
+                onChangeText={handleChange("lastName")}
                 autoCapitalize="none"
-                onBlur={handleBlur('lastName')}
+                onBlur={handleBlur("lastName")}
               />
               <TextInput
                 style={styles.input}
                 numberOfLines={1}
                 value={values.gender}
                 placeholder="Enter gender"
-                onChangeText={handleChange('gender')}
+                onChangeText={handleChange("gender")}
                 autoCapitalize="none"
-                onBlur={handleBlur('gender')}
+                onBlur={handleBlur("gender")}
               />
               <TextInput
                 style={styles.input}
                 numberOfLines={1}
                 value={values.address}
                 placeholder="Enter address"
-                onChangeText={handleChange('address')}
+                onChangeText={handleChange("address")}
                 autoCapitalize="none"
-                onBlur={handleBlur('address')}
+                onBlur={handleBlur("address")}
               />
               <TextInput
                 style={styles.input}
                 numberOfLines={1}
                 value={values.birthdate}
                 placeholder="Enter birthday"
-                onChangeText={handleChange('birthdate')}
+                onChangeText={handleChange("birthdate")}
                 autoCapitalize="none"
-                onBlur={handleBlur('birthdate')}
+                onBlur={handleBlur("birthdate")}
               />
 
               {/* <DatePicker
@@ -352,16 +352,16 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   errorText: {
-    color: 'red',
+    color: "red",
   },
   container: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 40,
   },
   input: {
     marginVertical: 10,
-    width: Dimensions.get('window').width - 100,
+    width: Dimensions.get("window").width - 100,
 
     height: 40,
     borderWidth: 1,
@@ -370,48 +370,48 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginVertical: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 10,
-    width: Dimensions.get('window').width - 200,
+    width: Dimensions.get("window").width - 200,
     height: 44,
     borderRadius: 5,
-    backgroundColor: '#343434',
+    backgroundColor: "#343434",
   },
   button2Container: {
     margin: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 10,
-    width: Dimensions.get('window').width / 3,
+    width: Dimensions.get("window").width / 3,
     height: 44,
     borderRadius: 5,
     backgroundColor: Color.GREEN3,
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   button2ContainerActive: {
     margin: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 10,
-    width: Dimensions.get('window').width / 3,
+    width: Dimensions.get("window").width / 3,
     height: 44,
     borderRadius: 5,
     backgroundColor: Color.GREEN4,
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   button2Wrapper: {
     marginVertical: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 10,
-    width: Dimensions.get('window').width / 3,
+    width: Dimensions.get("window").width / 3,
     height: 44,
     borderRadius: 5,
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   buttonText: {
     fontSize: 18,
-    color: '#ffffff',
+    color: "#ffffff",
   },
 });

@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@react-native-picker/picker": "2.4.0",
+    "@react-native-picker/picker": "2.4.1",
     "@react-navigation/material-bottom-tabs": "^6.2.1",
     "@react-navigation/native": "^6.0.10",
     "@react-navigation/native-stack": "^6.6.2",

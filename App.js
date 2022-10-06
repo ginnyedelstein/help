@@ -21,7 +21,6 @@ import Feed from "./components/Feed";
 import * as Color from "./styles/Color";
 import ChatList from "./components/ChatList";
 import Chat from "./components/Chat";
-// import ChatNavigation from './navigation/ChatNavigation'
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()

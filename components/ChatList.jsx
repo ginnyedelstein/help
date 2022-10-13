@@ -5,17 +5,17 @@ import {
   Dimensions,
   FlatList,
   TouchableOpacity,
-} from 'react-native';
+} from "react-native";
 
-import SafeAreaView from 'react-native-safe-area-view';
-import * as Color from '../styles/Color';
+import SafeAreaView from "react-native-safe-area-view";
+import * as Color from "../styles/Color";
 
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
-import Config from '../lib/Config';
-import { useNavigation } from '@react-navigation/native';
+import Config from "../lib/Config";
+import { useNavigation } from "@react-navigation/native";
 
 const ChatList = ({ user }) => {
   const [chats, setChats] = useState([]);
@@ -24,10 +24,10 @@ const ChatList = ({ user }) => {
   const fetchChats = async () => {
     try {
       const res = await fetch(`${Config.apiUrl}/chats/${user}`, {
-        method: 'GET',
+        method: "GET",
         headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
       });
       const resJson = await res.json();
@@ -49,11 +49,12 @@ const ChatList = ({ user }) => {
         data={chats.map((chat) => {
           return { ...chat, key: chat.id };
         })}
-        renderItem={({ item }) => {
+        renderItem={({ item, index }) => {
           return (
             <View style={styles.card}>
-              <Text style={styles.request}>{item.userId1} </Text>
-              <Text style={styles.request}>{item.userId2} </Text>
+              <Text style={styles.request}>
+                {item.name || `Chat ${index}`}{" "}
+              </Text>
               {/* <Text style={styles.message}>
                 {JSON.parse(item.messages)[0].text}{' '}
               </Text> */}
@@ -62,7 +63,7 @@ const ChatList = ({ user }) => {
                 style={styles.chat}
                 title="chat"
                 onPress={() =>
-                  navigation.navigate('Chat', {
+                  navigation.navigate("Chat", {
                     requestUserId:
                       item.userId1 === user ? item.userId2 : item.userId1,
                     currentUserId: user,
@@ -88,55 +89,55 @@ export default ChatList;
 
 const styles = StyleSheet.create({
   container: {
-    display: 'flex',
-    alignItems: 'center',
+    display: "flex",
+    alignItems: "center",
   },
   scrollContainer: {},
   filersContainer: {
     flex: 1,
     // alignItems: "center",
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    justifyContent: "space-around",
     marginLeft: 60,
     marginTop: 40,
   },
   card: {
-    display: 'flex',
+    display: "flex",
     margin: 10,
     backgroundColor: Color.GREEN2,
-    justifyContent: 'center',
+    justifyContent: "center",
     padding: 10,
-    width: Dimensions.get('window').width - 20,
+    width: Dimensions.get("window").width - 20,
     borderRadius: 5,
   },
   message: {
-    display: 'flex',
+    display: "flex",
     margin: 5,
     marginBottom: 0,
     backgroundColor: Color.GREEN2,
-    justifyContent: 'center',
-    color: 'grey',
+    justifyContent: "center",
+    color: "grey",
   },
   request: {
-    display: 'flex',
-    alignContent: 'flex-start',
-    fontWeight: '400',
+    display: "flex",
+    alignContent: "flex-start",
+    fontWeight: "400",
   },
   description: {
-    display: 'flex',
-    alignContent: 'flex-start',
-    fontWeight: '300',
+    display: "flex",
+    alignContent: "flex-start",
+    fontWeight: "300",
   },
   chat: {
     margin: 5,
     height: 31,
   },
   buttons: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "flex-end",
     padding: 2,
-    width: Dimensions.get('window').width - 50,
+    width: Dimensions.get("window").width - 50,
     height: 31,
     borderRadius: 5,
   },

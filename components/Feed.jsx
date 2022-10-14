@@ -346,22 +346,20 @@ export default Feed;
 const styles = StyleSheet.create({
   container: {
     display: "flex",
-    alignItems: "center",
+    alignItems: "flex-end",
   },
   scrollContainer: {},
   filersContainer: {
-    flex: 1,
-    // alignItems: "center",
+    alignItems: "flex-end",
+    display: "flex",
     flexDirection: "row",
     justifyContent: "space-around",
-    marginLeft: 60,
-    marginTop: 40,
+    marginLeft: 90,
+    zIndex: 2000,
   },
   card: {
-    display: "flex",
     margin: 10,
     backgroundColor: Color.GREEN2,
-    justifyContent: "center",
     padding: 10,
     width: Dimensions.get("window").width - 20,
     borderRadius: 5,
@@ -369,12 +367,28 @@ const styles = StyleSheet.create({
   request: {
     display: "flex",
     alignContent: "flex-start",
-    fontWeight: "400",
+    fontWeight: "500",
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  distance: {
+    alignContent: "flex-end",
   },
   description: {
-    display: "flex",
     alignContent: "flex-start",
     fontWeight: "300",
+    marginTop: 5,
+  },
+  imgContainer: {
+    alignItems: "center",
+  },
+  img: {
+    alignContent: "flex-end",
+    marginTop: 5,
+    width: 70,
+    height: 70,
   },
   chat: {
     margin: 5,

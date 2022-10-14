@@ -1,16 +1,16 @@
 {
   "files": {
-    "app.js": "/help/static/js/app.93892de6.chunk.js",
-    "app.js.map": "/help/static/js/app.93892de6.chunk.js.map",
+    "app.js": "/help/static/js/app.3c3c6794.chunk.js",
+    "app.js.map": "/help/static/js/app.3c3c6794.chunk.js.map",
     "runtime~app.js": "/help/static/js/runtime~app.de5ade08.js",
     "runtime~app.js.map": "/help/static/js/runtime~app.de5ade08.js.map",
-    "static/js/2.901dae49.chunk.js": "/help/static/js/2.901dae49.chunk.js",
-    "static/js/2.901dae49.chunk.js.map": "/help/static/js/2.901dae49.chunk.js.map",
+    "static/js/2.4008b006.chunk.js": "/help/static/js/2.4008b006.chunk.js",
+    "static/js/2.4008b006.chunk.js.map": "/help/static/js/2.4008b006.chunk.js.map",
     "fonts/MaterialCommunityIcons.ttf": "/help/./fonts/MaterialCommunityIcons.ttf",
     "index.html": "/help/index.html",
     "manifest.json": "/help/manifest.json",
     "serve.json": "/help/serve.json",
-    "static/js/2.901dae49.chunk.js.LICENSE.txt": "/help/static/js/2.901dae49.chunk.js.LICENSE.txt",
+    "static/js/2.4008b006.chunk.js.LICENSE.txt": "/help/static/js/2.4008b006.chunk.js.LICENSE.txt",
     "static/media/arrow-down.png": "/help/static/media/arrow-down.772a5382.png",
     "static/media/arrow-up.png": "/help/static/media/arrow-up.0b0d1af9.png",
     "static/media/close.png": "/help/static/media/close.b65df71a.png",
@@ -20,7 +20,7 @@
   },
   "entrypoints": [
     "static/js/runtime~app.de5ade08.js",
-    "static/js/2.901dae49.chunk.js",
-    "static/js/app.93892de6.chunk.js"
+    "static/js/2.4008b006.chunk.js",
+    "static/js/app.3c3c6794.chunk.js"
   ]
 }

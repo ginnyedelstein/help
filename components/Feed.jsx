@@ -365,7 +365,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   request: {
-    display: "flex",
     alignContent: "flex-start",
     fontWeight: "500",
   },
@@ -375,6 +374,7 @@ const styles = StyleSheet.create({
   },
   distance: {
     alignContent: "flex-end",
+    fontWeight: "400",
   },
   description: {
     alignContent: "flex-start",

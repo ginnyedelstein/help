@@ -42,7 +42,7 @@
     "@babel/core": "^7.12.9",
     "gh-pages": "^4.0.0"
   },
-  "homepage": "http://evanbacon.github.io/expo-gh-pages",
+  "homepage": "https://ginnyedelstein.github.io/help/",
   "scripts": {
         "deploy": "gh-pages -d web-build",
         "predeploy": "expo export:web"

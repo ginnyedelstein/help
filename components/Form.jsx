@@ -220,7 +220,7 @@ export default function Form({ user }) {
                 <Picker.Item label="Pet" value="pet" />
                 <Picker.Item label="Technology" value="technology" />
               </Picker> */}
-              <RNPickerSelect
+              {/* <RNPickerSelect
                 onValueChange={(value) => {
                   setSelectedCategory(value);
                   console.log(selectedCategory);
@@ -231,7 +231,7 @@ export default function Form({ user }) {
                   { label: "Athletics", value: "athletics" },
                   { label: "Children", value: "children" },
                 ]}
-              />
+              /> */}
               {/* <Text>select help radius</Text> */}
               {/* <Picker
                 value={values.distance}

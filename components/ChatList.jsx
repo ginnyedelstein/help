@@ -52,12 +52,12 @@ const ChatList = ({ user }) => {
         renderItem={({ item, index }) => {
           return (
             <View style={styles.card}>
-              <Text style={styles.request}>
-                {item.name || `Chat ${index}`}{" "}
+              <Text style={styles.request}>{`Chat ${index + 1}`} </Text>
+              <Text style={styles.message}>
+                {typeof item.messages === string && item.messages.length > 4
+                  ? JSON.parse(item.messages)[0].text
+                  : ""}{" "}
               </Text>
-              {/* <Text style={styles.message}>
-                {JSON.parse(item.messages)[0].text}{' '}
-              </Text> */}
 
               <TouchableOpacity
                 style={styles.chat}

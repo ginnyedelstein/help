@@ -15,6 +15,7 @@ import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplet
 import { Formik } from "formik";
 import * as Yup from "yup";
 import * as Color from "../styles/Color";
+import Config from "../lib/Config";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -45,30 +46,23 @@ const ErrorMessage = ({ errorValue }) => (
   </View>
 );
 
-export default function Login({ user, setUser, setIsNotSignedIn }) {
+export default function Login({ setUser, setIsNotSignedIn }) {
   // const { signIn } = useContext(AuthContext);
   const [loginActive, setLoginActive] = useState(true);
 
   const callLogin = async (email, password) => {
     try {
-      const res = await fetch(
-        `https://yl2dnogf69.execute-api.us-east-1.amazonaws.com/sign-in`,
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          // body: JSON.stringify({
-          //   email: "ginny.rae@hotmail.com",
-          //   password: "Help123!",
-          // }),
-          body: JSON.stringify({
-            email: email, //"richardjperkins89@gmail.com",
-            password: password, //"rrrRRR1!",
-          }),
-        }
-      );
+      const res = await fetch(`${Config.apiUrl}/sign-in`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      });
       const resJson = await res.json();
       if (res.status === 200) {
         const userToken = jwt_decode(resJson.idToken).sub;
@@ -78,7 +72,7 @@ export default function Login({ user, setUser, setIsNotSignedIn }) {
         return userToken;
       } else {
         // setResult("empty");
-        alert(res.status);
+        alert(res.message);
       }
     } catch (err) {
       // setResult("error");
@@ -96,29 +90,22 @@ export default function Login({ user, setUser, setIsNotSignedIn }) {
     password
   ) => {
     try {
-      const res = await fetch(
-        `https://yl2dnogf69.execute-api.us-east-1.amazonaws.com/users`,
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: email,
-            firstName: firstName,
-            lastName: lastName,
-            gender: gender,
-            address: address,
-            birthdate: birthdate,
-            password: password,
-          }),
-          // body: JSON.stringify({
-          //   email: email1,
-          //   password: password1,
-          // }),
-        }
-      );
+      const res = await fetch(`${Config.apiUrl}/users`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          firstName: firstName,
+          lastName: lastName,
+          gender: gender,
+          address: address,
+          birthdate: birthdate,
+          password: password,
+        }),
+      });
       const resJson = await res.json();
       if (res.status === 200) {
         const cleanedRes = JSON.stringify(resJson);
@@ -126,7 +113,7 @@ export default function Login({ user, setUser, setIsNotSignedIn }) {
         return cleanedRes;
       } else {
         // setResult("empty");
-        alert(res.status);
+        alert(resJson.body);
       }
     } catch (err) {
       // setResult("error");

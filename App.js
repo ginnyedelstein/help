@@ -11,6 +11,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { NavigationContainer } from "@react-navigation/native";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import Form from "./components/Form";
@@ -18,6 +19,8 @@ import Profile from "./components/Profile";
 import Login from "./components/Login";
 import Feed from "./components/Feed";
 import * as Color from "./styles/Color";
+import ChatList from "./components/ChatList";
+import Chat from "./components/Chat";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -45,6 +48,7 @@ export default function App() {
   const [isNotSignedIn, setIsNotSignedIn] = useState(true);
 
   const Tab = createMaterialBottomTabNavigator();
+  const Stack = createNativeStackNavigator();
 
   function FeedScreen() {
     return (
@@ -54,13 +58,40 @@ export default function App() {
     );
   }
 
-  function ChatScreen() {
+  function ChatListScreen() {
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <Text>Chat Screen</Text>
+        <ChatList user={user} />
       </View>
     );
   }
+
+  const ChatStackNavigator = () => {
+    return (
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <Stack.Screen name="Chats" component={ChatListScreen} />
+        <Stack.Screen name="Chat" component={Chat} />
+      </Stack.Navigator>
+    );
+  };
+
+  const FeedChatNavigator = () => {
+    return (
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}
+        initialRouteName={"FeedNav"}
+      >
+        <Stack.Screen name="FeedNav" component={FeedScreen} />
+        <Stack.Screen name="Chat" component={Chat} />
+      </Stack.Navigator>
+    );
+  };
 
   function LoginScreen() {
     return (
@@ -82,6 +113,14 @@ export default function App() {
     );
   }
 
+  function FormScreen() {
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Form user={user} />
+      </View>
+    );
+  }
+
   return isNotSignedIn ? (
     <Login setUser={setUser} user={user} setIsNotSignedIn={setIsNotSignedIn} />
   ) : (
@@ -95,7 +134,7 @@ export default function App() {
       >
         <Tab.Screen
           name="Feed"
-          component={FeedScreen}
+          component={FeedChatNavigator}
           options={{
             title: "The Feed",
             tabBarLabel: "Feed",
@@ -106,7 +145,7 @@ export default function App() {
         />
         <Tab.Screen
           name="Help"
-          component={Form}
+          component={FormScreen}
           options={{
             title: "Get/Give Help",
             tabBarLabel: "Get/Give Help",
@@ -120,11 +159,11 @@ export default function App() {
           }}
         />
         <Tab.Screen
-          name="Chat"
-          component={LoginScreen}
+          name="Chat List"
+          component={ChatStackNavigator}
           options={{
-            title: "Chat",
-            tabBarLabel: "Chat",
+            title: "User Chats",
+            tabBarLabel: "Chat list",
             tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons name="forum" color={color} size={26} />
             ),

@@ -16,10 +16,12 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import * as Location from "expo-location";
 import React, { useState, useCallback, useEffect } from "react";
 import DropDownPicker from "react-native-dropdown-picker";
+import { useNavigation } from "@react-navigation/native";
 
 import * as Color from "../styles/Color";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { getDistance } from "geolib";
+import Config from "../lib/Config";
 
 const Feed = ({ user }) => {
   const help = [1, 2, 3, 4];
@@ -49,22 +51,21 @@ const Feed = ({ user }) => {
   const [location, setLocation] = useState({});
   const [errorMsg, setErrorMsg] = useState(null);
 
+  const navigation = useNavigation();
+
   const wait = (timeout) => {
     return new Promise((resolve) => setTimeout(resolve, timeout));
   };
 
   const fetchData = async () => {
     try {
-      const res = await fetch(
-        `https://yl2dnogf69.execute-api.us-east-1.amazonaws.com/requests`,
-        {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const res = await fetch(`${Config.apiUrl}/requests`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
       const resJson = await res.json();
       if (res.status === 200) {
         let result = [];
@@ -72,7 +73,7 @@ const Feed = ({ user }) => {
         setFeed(json_data);
         setFeedDisplay(feed);
       } else {
-        alert(res.status);
+        alert(resJson.message);
       }
     } catch (err) {
       alert(err);
@@ -87,25 +88,20 @@ const Feed = ({ user }) => {
     });
   }, []);
 
-  // const currentUserId = "4c6cab21-29cf-4977-a3e8-2beb008c3441";
-
   const acceptById = async (requestId) => {
     alert(requestId);
     alert(user);
     try {
-      const res = await fetch(
-        `https://yl2dnogf69.execute-api.us-east-1.amazonaws.com/requests/${requestId}`,
-        {
-          method: "PUT",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            acceptedUserId: user,
-          }),
-        }
-      );
+      const res = await fetch(`${Config.apiUrl}/requests/${requestId}`, {
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          acceptedUserId: user,
+        }),
+      });
       const resJson = await res.json();
       if (res.status === 200) {
         const cleanedRes = JSON.stringify(resJson);
@@ -114,7 +110,7 @@ const Feed = ({ user }) => {
         return cleanedRes;
       } else {
         // setResult("empty");
-        alert(res.status);
+        alert(resJson.message);
       }
     } catch (err) {
       // setResult("error");
@@ -252,7 +248,7 @@ const Feed = ({ user }) => {
           {feedItem.acceptedUserId || "no one"}
         </Text>
       ))} */}
-      {/* <Text>CURRENT USER: {user}</Text> */}
+      <Text>CURRENT USER: {user}</Text>
       <FlatList
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -317,17 +313,24 @@ const Feed = ({ user }) => {
               ) : (
                 <></>
               )}
-              <TouchableOpacity
-                style={styles.chat}
-                title="chat"
-                onPress={() => console.log(item.requestId)}
-              >
-                <MaterialCommunityIcons
-                  name="forum-outline"
-                  color={Color.GREEN4}
-                  size={30}
-                />
-              </TouchableOpacity>
+              {item.userId !== user ? (
+                <TouchableOpacity
+                  style={styles.chat}
+                  title="chat"
+                  onPress={() =>
+                    navigation.navigate("Chat", {
+                      requestUserId: item.userId,
+                      currentUserId: user,
+                    })
+                  }
+                >
+                  <MaterialCommunityIcons
+                    name="forum-outline"
+                    color={Color.GREEN4}
+                    size={30}
+                  />
+                </TouchableOpacity>
+              ) : undefined}
             </View>
           </View>
         )}

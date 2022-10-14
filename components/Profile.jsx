@@ -2,15 +2,16 @@ import { View, Text, StyleSheet, Dimensions } from "react-native";
 import React, { useState, useLayoutEffect } from "react";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Login from "./Login";
+import Config from "../lib/Config";
 
 const Profile = ({ user }) => {
   const [userData, setUserData] = useState({});
   const userName = user.replace(/"/g, "");
-  const lnk = `https://yl2dnogf69.execute-api.us-east-1.amazonaws.com/users/83a6b4bd-9975-42ba-987d-e12d031a80b0`;
+  const lnk = `${Config.apiUrl}/users/83a6b4bd-9975-42ba-987d-e12d031a80b0`;
   const fetchUser = async () => {
     try {
       const res = await fetch(
-        `https://yl2dnogf69.execute-api.us-east-1.amazonaws.com/users/83a6b4bd-9975-42ba-987d-e12d031a80b0`,
+        `${Config.apiUrl}/users/83a6b4bd-9975-42ba-987d-e12d031a80b0`,
         {
           method: "GET",
           headers: {

@@ -1,26 +1,26 @@
 {
   "files": {
-    "app.js": "/help/static/js/app.3c3c6794.chunk.js",
-    "app.js.map": "/help/static/js/app.3c3c6794.chunk.js.map",
-    "runtime~app.js": "/help/static/js/runtime~app.de5ade08.js",
-    "runtime~app.js.map": "/help/static/js/runtime~app.de5ade08.js.map",
-    "static/js/2.4008b006.chunk.js": "/help/static/js/2.4008b006.chunk.js",
-    "static/js/2.4008b006.chunk.js.map": "/help/static/js/2.4008b006.chunk.js.map",
-    "fonts/MaterialCommunityIcons.ttf": "/help/./fonts/MaterialCommunityIcons.ttf",
-    "index.html": "/help/index.html",
-    "manifest.json": "/help/manifest.json",
-    "serve.json": "/help/serve.json",
-    "static/js/2.4008b006.chunk.js.LICENSE.txt": "/help/static/js/2.4008b006.chunk.js.LICENSE.txt",
-    "static/media/arrow-down.png": "/help/static/media/arrow-down.772a5382.png",
-    "static/media/arrow-up.png": "/help/static/media/arrow-up.0b0d1af9.png",
-    "static/media/close.png": "/help/static/media/close.b65df71a.png",
-    "static/media/logo.png": "/help/static/media/logo.ad20a0cd.png",
-    "static/media/powered_by_google_on_white.png": "/help/static/media/powered_by_google_on_white.f241a554.png",
-    "static/media/tick.png": "/help/static/media/tick.3a2306c7.png"
+    "app.js": "/static/js/app.18ad1789.chunk.js",
+    "app.js.map": "/static/js/app.18ad1789.chunk.js.map",
+    "runtime~app.js": "/static/js/runtime~app.27401809.js",
+    "runtime~app.js.map": "/static/js/runtime~app.27401809.js.map",
+    "static/js/2.bdd505c5.chunk.js": "/static/js/2.bdd505c5.chunk.js",
+    "static/js/2.bdd505c5.chunk.js.map": "/static/js/2.bdd505c5.chunk.js.map",
+    "fonts/MaterialCommunityIcons.ttf": "/./fonts/MaterialCommunityIcons.ttf",
+    "index.html": "/index.html",
+    "manifest.json": "/manifest.json",
+    "serve.json": "/serve.json",
+    "static/js/2.bdd505c5.chunk.js.LICENSE.txt": "/static/js/2.bdd505c5.chunk.js.LICENSE.txt",
+    "static/media/arrow-down.png": "/static/media/arrow-down.772a5382.png",
+    "static/media/arrow-up.png": "/static/media/arrow-up.0b0d1af9.png",
+    "static/media/close.png": "/static/media/close.b65df71a.png",
+    "static/media/logo.png": "/static/media/logo.ad20a0cd.png",
+    "static/media/powered_by_google_on_white.png": "/static/media/powered_by_google_on_white.f241a554.png",
+    "static/media/tick.png": "/static/media/tick.3a2306c7.png"
   },
   "entrypoints": [
-    "static/js/runtime~app.de5ade08.js",
-    "static/js/2.4008b006.chunk.js",
-    "static/js/app.3c3c6794.chunk.js"
+    "static/js/runtime~app.27401809.js",
+    "static/js/2.bdd505c5.chunk.js",
+    "static/js/app.18ad1789.chunk.js"
   ]
 }

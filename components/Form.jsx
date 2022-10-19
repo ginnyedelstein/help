@@ -8,6 +8,8 @@ import {
   StyleSheet,
   Dimensions,
 } from "react-native";
+import Config from "../lib/Config";
+
 import React, { useState, useEffect } from "react";
 // import { Picker } from "@react-native-picker/picker";
 import RNPickerSelect from "react-native-picker-select";
@@ -81,29 +83,26 @@ export default function Form({}) {
   }) => {
     try {
       console.log(location.coords);
-      const res = await fetch(
-        `https://yl2dnogf69.execute-api.us-east-1.amazonaws.com/requests`,
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: "ginny.rae@hotmail.com",
-            request: title,
-            description: description,
-            give: getHelpActive,
-            category: category,
-            location: `${location.coords.latitude}, ${location.coords.longitude}`,
-            photoS3Url: "",
-          }),
-          // body: JSON.stringify({
-          //   email: email1,
-          //   password: password1,
-          // }),
-        }
-      );
+      const res = await fetch(`${Config.apiUrl}/requests`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: user,
+          request: title,
+          description: description,
+          give: getHelpActive,
+          category: category,
+          location: `${location.coords.latitude}, ${location.coords.longitude}`,
+          photoS3Url: "",
+        }),
+        // body: JSON.stringify({
+        //   email: email1,
+        //   password: password1,
+        // }),
+      });
       const resJson = await res.json();
       if (res.status === 200) {
         const cleanedRes = JSON.stringify(resJson);

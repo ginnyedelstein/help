@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
+import Config from "../lib/Config";
 import SafeAreaView from "react-native-safe-area-view";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import * as Location from "expo-location";
@@ -55,16 +56,13 @@ const Feed = ({ user }) => {
 
   const fetchData = async () => {
     try {
-      const res = await fetch(
-        `https://yl2dnogf69.execute-api.us-east-1.amazonaws.com/requests`,
-        {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const res = await fetch(`${Config.apiUrl}/requests`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
       const resJson = await res.json();
       if (res.status === 200) {
         let result = [];
@@ -93,19 +91,16 @@ const Feed = ({ user }) => {
     alert(requestId);
     alert(user);
     try {
-      const res = await fetch(
-        `https://yl2dnogf69.execute-api.us-east-1.amazonaws.com/requests/${requestId}`,
-        {
-          method: "PUT",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            acceptedUserId: user,
-          }),
-        }
-      );
+      const res = await fetch(`${Config.apiUrl}/requests/${requestId}`, {
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          acceptedUserId: user,
+        }),
+      });
       const resJson = await res.json();
       if (res.status === 200) {
         const cleanedRes = JSON.stringify(resJson);

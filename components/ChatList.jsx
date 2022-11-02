@@ -5,6 +5,7 @@ import {
   Dimensions,
   FlatList,
   TouchableOpacity,
+  RefreshControl,
 } from "react-native";
 
 import SafeAreaView from "react-native-safe-area-view";
@@ -19,7 +20,23 @@ import { useNavigation } from "@react-navigation/native";
 
 const ChatList = ({ user }) => {
   const [chats, setChats] = useState([]);
+  const [userNames, setUserNames] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+
   const navigation = useNavigation();
+
+  const wait = (timeout) => {
+    return new Promise((resolve) => setTimeout(resolve, timeout));
+  };
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    console.log(userNames);
+    wait(1000).then(() => {
+      fetchUsernames();
+      setRefreshing(false);
+    });
+  }, []);
 
   const fetchChats = async () => {
     try {
@@ -31,7 +48,6 @@ const ChatList = ({ user }) => {
         },
       });
       const resJson = await res.json();
-      console.log(resJson);
       const chats = resJson.body;
       setChats(chats);
     } catch (err) {
@@ -39,20 +55,50 @@ const ChatList = ({ user }) => {
     }
   };
 
+  const fetchUsernames = async () => {
+    const nameArr = [];
+    chats.forEach(async (chat) => {
+      try {
+        const userId = chat.userId1 === user ? chat.userId2 : chat.userId1;
+        console.log(userId);
+        const res = await fetch(`${Config.apiUrl}/users/${userId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const resJson = await res.json();
+        if (res.status === 200) {
+          console.log(resJson.body.firstName);
+          nameArr.push(resJson.body.firstName);
+          setUserNames(nameArr);
+        }
+      } catch (err) {
+        console.error(err.message);
+      }
+    });
+  };
+
   useEffect(() => {
     fetchChats();
+    fetchUsernames();
   }, []);
 
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
         data={chats.map((chat) => {
           return { ...chat, key: chat.id };
         })}
         renderItem={({ item, index }) => {
           return (
             <View style={styles.card}>
-              <Text style={styles.request}>{`Chat ${index + 1}`} </Text>
+              <Text style={styles.request}>
+                {userNames[index] || `Chat ${index + 1}`}{" "}
+              </Text>
               <Text style={styles.message}>
                 {typeof item.messages === "string" && item.messages.length > 4
                   ? JSON.parse(item.messages)[0].text

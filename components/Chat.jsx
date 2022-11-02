@@ -18,28 +18,8 @@ const Chat = ({ route }) => {
     alert("currentUserId not defined");
   }
 
-  const fetchUser2 = async () => {
-    console.log("requestUserId", requestUserId);
-    try {
-      const res = await fetch(`${Config.apiUrl}/users/${requestUserId}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const resJson = await res.json();
-      if (res.status === 200) {
-        setUser2(resJson.body);
-        console.log(user2);
-      } else {
-        alert(res.error);
-      }
-    } catch (err) {
-      alert(err.message);
-    }
-  };
-
   const fetchChat = async () => {
+    console.log("user2.firstName", user2.firstName);
     try {
       const res = await fetch(
         `${Config.apiUrl}/chat/${requestUserId}/${currentUserId}/${user2.firstName}`,
@@ -90,31 +70,29 @@ const Chat = ({ route }) => {
   }, []);
 
   useEffect(() => {
-    fetchUser2().then(() => {
-      fetchChat().then((res) => {
-        // setChat(res.body)
-        try {
-          const msgs = JSON.parse(res.body.messages);
-          const msgsToSet = msgs
-            .map((msg) => {
-              return {
-                _id: msg.id || uuid(),
-                text: msg.text,
-                createdAt: msg.timestamp,
-                user: {
-                  _id: msg.userId,
-                  name: "msg.userName",
-                },
-              };
-            })
-            .sort((a, b) => (b.createdAt < a.createdAt ? -1 : 1));
-          setMessages(msgsToSet);
-        } catch (error) {
-          console.error(error);
-        }
-      });
+    fetchChat().then((res) => {
+      // setChat(res.body)
+      try {
+        const msgs = JSON.parse(res.body.messages);
+        const msgsToSet = msgs
+          .map((msg) => {
+            return {
+              _id: msg.id || uuid(),
+              text: msg.text,
+              createdAt: msg.timestamp,
+              user: {
+                _id: msg.userId,
+                name: "msg.userName",
+              },
+            };
+          })
+          .sort((a, b) => (b.createdAt < a.createdAt ? -1 : 1));
+        setMessages(msgsToSet);
+      } catch (error) {
+        console.error(error);
+      }
     });
-  }, []);
+  }, [user2]);
 
   const onSend = useCallback((newMessage = []) => {
     ws.current.send(

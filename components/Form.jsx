@@ -9,7 +9,6 @@ import {
   Dimensions,
 } from "react-native";
 import React, { useState, useEffect } from "react";
-import { Picker } from "@react-native-picker/picker";
 import RNPickerSelect from "react-native-picker-select";
 import * as Location from "expo-location";
 

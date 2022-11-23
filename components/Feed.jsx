@@ -143,10 +143,6 @@ const Feed = ({ user }) => {
   DropDownPicker.setMode("BADGE");
 
   useEffect(() => {
-    fetchData();
-  }, []);
-
-  useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
@@ -165,6 +161,10 @@ const Feed = ({ user }) => {
   } else if (location) {
     text = JSON.stringify(location);
   }
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -302,11 +302,15 @@ const Feed = ({ user }) => {
                 <TouchableOpacity
                   style={styles.chat}
                   title="accept"
-                  onPress={() => createConfirmationAlert(item.requestId)}
+                  activeOpacity={!item.acceptedUserId ? 0.7 : 1}
+                  onPress={() =>
+                    !item.acceptedUserId &&
+                    createConfirmationAlert(item.requestId)
+                  }
                 >
                   <MaterialCommunityIcons
                     name="text-box-check-outline"
-                    color={Color.GREEN4}
+                    color={!item.acceptedUserId ? Color.GREEN4 : Color.GREEN5}
                     size={30}
                   />
                 </TouchableOpacity>

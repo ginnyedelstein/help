@@ -5,6 +5,7 @@ import {
   Dimensions,
   FlatList,
   TouchableOpacity,
+  RefreshControl,
   SafeAreaView
 } from "react-native";
 
@@ -20,10 +21,18 @@ import { useNavigation } from "@react-navigation/native";
 import { useContext } from "react";
 import { authContext } from "./AuthContext";
 
+
 const ChatList = () => {
   const {user} = useContext(authContext);
-  const [chats, setChats] = useState([]);
   const [refresh, setRefresh] = useState(false);
+
+  const wait = (timeout) => {
+    return new Promise((resolve) => setTimeout(resolve, timeout));
+  };
+
+  const [chats, setChats] = useState([]);
+  const [refreshing, setRefreshing] = React.useState(false);
+
   const navigation = useNavigation();
 
   console.log(chats)
@@ -52,6 +61,14 @@ const ChatList = () => {
     }
   };
 
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    wait(2000).then(() => {
+      fetchChats();
+      setRefreshing(false);
+    });
+  }, []);
+
   useEffect(() => {
     fetchChats();
   }, []);
@@ -78,7 +95,13 @@ const ChatList = () => {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        data={chats}
+
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        data={chats.map((chat) => {
+          return { ...chat, key: chat.id };
+        })}
         renderItem={({ item, index }) => {
           console.log(item)
           return (

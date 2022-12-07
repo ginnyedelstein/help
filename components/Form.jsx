@@ -16,6 +16,10 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import * as Color from "../styles/Color";
 import Config from "../lib/Config";
+import DropDownPicker from "react-native-dropdown-picker";
+import { useRef } from "react";
+import { authContext } from "./AuthContext";
+import { useContext } from "react";
 
 const validationSchema = Yup.object().shape({
   title: Yup.string()
@@ -36,12 +40,22 @@ const ErrorMessage = ({ errorValue }) => (
   </View>
 );
 
-export default function Form({ user }) {
+export default function Form() {
+  const {user} = useContext(authContext);
   const [selectedCategory, setSelectedCategory] = useState("general");
   const [selectedDistance, setSelectedDistance] = useState("5");
   const [getHelpActive, setGetHelpActive] = useState(true);
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
+
+  const [CategoryOpen, setCategoryOpen] = useState(false);
+  const [CategoryValue, setCategoryValue] = useState("general");
+  const [CategoryItems, setCategoryItems] = useState([
+    { label: "General", value: "general" },
+    { label: "Athletics", value: "athletics" },
+    { label: "Children", value: "children" },
+  ]);
+
 
   // function onSubmitHandler(values) {
   //   const { title, description, category, distance } = values;
@@ -76,8 +90,7 @@ export default function Form({ user }) {
   const onSubmitHandler = async ({
     title,
     description,
-    category,
-    distance,
+    category
   }) => {
     try {
       const res = await fetch(`${Config.apiUrl}/requests`, {
@@ -153,11 +166,11 @@ export default function Form({ user }) {
         </View>
         {getHelpActive ? <Text>get help</Text> : <Text>give help</Text>}
         <Formik
+          enableReinitialize = {true}
           initialValues={{
             title: "",
             description: "",
-            category: selectedCategory,
-            distance: selectedDistance,
+            category:selectedCategory
           }}
           onSubmit={(values, actions) => {
             onSubmitHandler(values, actions);
@@ -219,7 +232,28 @@ export default function Form({ user }) {
                 <Picker.Item label="Pet" value="pet" />
                 <Picker.Item label="Technology" value="technology" />
               </Picker> */}
-              <RNPickerSelect
+
+<View style={styles.multiDropView} >
+                <DropDownPicker
+                    multiple={false}
+                    open={CategoryOpen}
+                    value={CategoryValue}
+                    items={CategoryItems}
+                    setOpen={setCategoryOpen}
+                    setValue={setCategoryValue}
+                    onChangeValue={handleChange('category')}
+                    setItems={setCategoryItems}
+                    showBadgeDot={false}
+                    style={{
+                      backgroundColor: Color.GREEN3,
+                      borderColor: Color.GREEN3,
+                    }}
+                    placeholder="Select Category"
+                  />
+    </View>
+
+
+              {/* <RNPickerSelect
                 onValueChange={(value) => {
                   setSelectedCategory(value);
                   console.log(selectedCategory);
@@ -230,7 +264,7 @@ export default function Form({ user }) {
                   { label: "Athletics", value: "athletics" },
                   { label: "Children", value: "children" },
                 ]}
-              />
+              /> */}
               {/* <Text>select help radius</Text> */}
               {/* <Picker
                 value={values.distance}
@@ -341,5 +375,12 @@ const styles = StyleSheet.create({
     padding: 0,
     borderWidth: 1,
     borderRadius: 5,
+    
   },
+  multiDropView:{
+    width:Dimensions.get("window").width- 100 ,
+    flex:1,
+    zIndex:999
+  },
+  
 });

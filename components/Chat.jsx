@@ -103,7 +103,7 @@ const Chat = ({ route }) => {
                 createdAt: msg.timestamp,
                 user: {
                   _id: msg.userId,
-                  name: "msg.userName",
+                  name: msg.userName,
                 },
               };
             })

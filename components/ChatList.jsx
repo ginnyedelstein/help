@@ -5,9 +5,10 @@ import {
   Dimensions,
   FlatList,
   TouchableOpacity,
+  SafeAreaView
 } from "react-native";
 
-import SafeAreaView from "react-native-safe-area-view";
+
 import * as Color from "../styles/Color";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -16,10 +17,16 @@ import React, { useState, useEffect } from "react";
 
 import Config from "../lib/Config";
 import { useNavigation } from "@react-navigation/native";
+import { useContext } from "react";
+import { authContext } from "./AuthContext";
 
-const ChatList = ({ user }) => {
+const ChatList = () => {
+  const {user} = useContext(authContext);
   const [chats, setChats] = useState([]);
+  const [refresh, setRefresh] = useState(false);
   const navigation = useNavigation();
+
+  console.log(chats)
 
   const fetchChats = async () => {
     try {
@@ -30,10 +37,16 @@ const ChatList = ({ user }) => {
           "Content-Type": "application/json",
         },
       });
-      const resJson = await res.json();
-      console.log(resJson);
-      const chats = resJson.body;
-      setChats(chats);
+      let resJson = await res.json();
+      let messages = resJson?.body
+
+      await Promise.all(messages.map(async (element,index) => {
+        let value =  await fetchUser(element.userId1)
+        messages[index]["name"] = value
+      }));
+
+      setChats(messages);
+      setRefresh((val)=>setRefresh(!val))
     } catch (err) {
       alert(err);
     }
@@ -43,16 +56,35 @@ const ChatList = ({ user }) => {
     fetchChats();
   }, []);
 
+
+  const fetchUser = async (id) => {
+    try {
+      const res = await fetch(`${Config.apiUrl}/users/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const resJson = await res.json();
+      if (res.status === 200) {
+        let name = resJson?.body?.firstName +" "+ resJson?.body?.lastName
+        return(name)
+      } 
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        data={chats.map((chat) => {
-          return { ...chat, key: chat.id };
-        })}
+        data={chats}
         renderItem={({ item, index }) => {
+          console.log(item)
           return (
-            <View style={styles.card}>
+            <View style={styles.card} key={index}>
               <Text style={styles.request}>{`Chat ${index + 1}`} </Text>
+              <Text style={styles.request}>{item.name}</Text>
               <Text style={styles.message}>
                 {typeof item.messages === "string" && item.messages.length > 4
                   ? JSON.parse(item.messages)[0].text
@@ -136,6 +168,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "flex-end",
+    padding: 2,
+    width: Dimensions.get("window").width - 50,
+    height: 31,
+    borderRadius: 5,
+  },
+  buttonsBack: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
     padding: 2,
     width: Dimensions.get("window").width - 50,
     height: 31,

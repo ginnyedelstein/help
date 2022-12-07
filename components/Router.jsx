@@ -22,8 +22,6 @@ import * as Color from "./styles/Color";
 import ChatList from "./components/ChatList";
 import Chat from "./components/Chat";
 
-import {authContext} from './components/AuthContext'
-
 const validationSchema = Yup.object().shape({
   email: Yup.string()
     .label("Email")
@@ -41,17 +39,21 @@ const ErrorMessage = ({ errorValue }) => (
   </View>
 );
 
-export default function App() {
- 
+export default function Router() {
+  const authContext = createContext(undefined);
+  // const authenticated = useContext(authContext);
+  // const username = useContext(authContext);
   const [user, setUser] = useState("");
+
   const [isNotSignedIn, setIsNotSignedIn] = useState(true);
+
   const Tab = createMaterialBottomTabNavigator();
   const Stack = createNativeStackNavigator();
 
   function FeedScreen() {
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <Feed />
+        <Feed user={user} />
       </View>
     );
   }
@@ -59,7 +61,7 @@ export default function App() {
   function ChatListScreen() {
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <ChatList />
+        <ChatList user={user} />
       </View>
     );
   }
@@ -68,16 +70,10 @@ export default function App() {
     return (
       <Stack.Navigator
         screenOptions={{
-          headerShown: true,
-          headerTransparent: true,
-          headerBackTitleVisible:true,
-          headerBackTitle:'Back',
-          headerTitle:''
-          
-          
+          headerShown: false,
         }}
       >
-        <Stack.Screen name="Chats" component={ChatListScreen}  />
+        <Stack.Screen name="Chats" component={ChatListScreen} />
         <Stack.Screen name="Chat" component={Chat} />
       </Stack.Navigator>
     );
@@ -112,7 +108,7 @@ export default function App() {
   function ProfileScreen() {
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <Profile />
+        <Profile user={user} />
       </View>
     );
   }
@@ -120,18 +116,17 @@ export default function App() {
   function FormScreen() {
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <Form />
+        <Form user={user} />
       </View>
     );
   }
 
-  return isNotSignedIn ? (
+  return !isNotSignedIn ? (
     <Login setUser={setUser} user={user} setIsNotSignedIn={setIsNotSignedIn} />
   ) : (
-    <authContext.Provider
-    value={{setIsNotSignedIn, setUser, user }}
-  >
     <NavigationContainer>
+      <Stack.Navigator>
+      <Stack.Screen name="Chat" component={Chat} />
       <Tab.Navigator
         initialRouteName="Feed"
         labeled="false"
@@ -192,9 +187,8 @@ export default function App() {
           }}
         />
       </Tab.Navigator>
+      </Stack.Navigator>
     </NavigationContainer>
-    </authContext.Provider>
-
   );
 }
 

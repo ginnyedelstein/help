@@ -10,8 +10,9 @@ import {
   TouchableHighlight,
   TouchableOpacity,
   Alert,
+  SafeAreaView
 } from "react-native";
-import SafeAreaView from "react-native-safe-area-view";
+
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import * as Location from "expo-location";
 import React, { useState, useCallback, useEffect } from "react";
@@ -22,8 +23,12 @@ import * as Color from "../styles/Color";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { getDistance } from "geolib";
 import Config from "../lib/Config";
+import { authContext } from "./AuthContext";
+import { useContext } from "react";
 
-const Feed = ({ user }) => {
+const Feed = () => {
+
+  const {user} = useContext(authContext);
   const help = [1, 2, 3, 4];
   const [categoryOpen, setCategoryOpen] = useState(false);
   const [categoryValue, setCategoryValue] = useState([]);
@@ -68,10 +73,11 @@ const Feed = ({ user }) => {
       });
       const resJson = await res.json();
       if (res.status === 200) {
-        let result = [];
-        let json_data = resJson.body;
-        setFeed(json_data);
-        setFeedDisplay(feed);
+        let recent =  resJson?.body?.sort(function(a,b){
+          return new Date(b.updatedAt) - new Date(a.updatedAt);
+        });
+        setFeed(recent)
+        setFeedDisplay(recent)
       } else {
         alert(resJson.message);
       }
@@ -175,6 +181,7 @@ const Feed = ({ user }) => {
         }
       > */}
       <View style={styles.filersContainer}>
+        <View style={styles.multiDropView} >
         <DropDownPicker
           multiple={true}
           open={categoryOpen}
@@ -185,13 +192,8 @@ const Feed = ({ user }) => {
           setItems={setCategoryItems}
           showBadgeDot={false}
           style={{
-            display: "flex",
-            flexDirection: "row",
-            margin: 5,
             backgroundColor: Color.GREEN3,
             borderColor: Color.GREEN3,
-            width: Dimensions.get("window").width / 3,
-            // zIndex: -1,
           }}
           onChangeValue={(value) => {
             console.log(categoryValue);
@@ -212,6 +214,9 @@ const Feed = ({ user }) => {
           onOpen={onCategoryOpen}
           placeholder="Category"
         />
+
+</View>
+<View style={styles.multiDropView} >
         <DropDownPicker
           multiple={false}
           open={radiusOpen}
@@ -222,12 +227,8 @@ const Feed = ({ user }) => {
           setItems={setRadiusItems}
           showBadgeDot={false}
           style={{
-            display: "flex",
-            flexDirection: "row",
-            margin: 5,
             backgroundColor: Color.GREEN3,
             borderColor: Color.GREEN3,
-            width: Dimensions.get("window").width / 3,
           }}
           onChangeValue={(value) => {
             alert(value);
@@ -240,6 +241,7 @@ const Feed = ({ user }) => {
           onOpen={onRadiusOpen}
           placeholder="Radius"
         />
+      </View>
       </View>
       {/* {feed.map((feedItem, index) => (
         <Text data={feed}>
@@ -350,13 +352,17 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {},
   filersContainer: {
-    alignItems: "flex-end",
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-around",
-    marginLeft: 90,
-    zIndex: 2000,
+    paddingHorizontal:10,
+    zIndex:9999
   },
+  multiDropView:{
+    flex:1,
+    padding:5
+  },
+  
   card: {
     margin: 10,
     backgroundColor: Color.GREEN2,

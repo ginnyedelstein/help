@@ -1,13 +1,23 @@
-import { View, Text, StyleSheet, Dimensions } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+} from "react-native";
 import React, { useState, useLayoutEffect } from "react";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Login from "./Login";
 import Config from "../lib/Config";
+import { useContext } from "react";
+import { authContext } from "./AuthContext";
 
-const Profile = ({ user }) => {
+const Profile = () => {
+  const {user ,setIsNotSignedIn, setUser } = useContext(authContext);
   const [userData, setUserData] = useState({});
-  const userName = user.replace(/"/g, "");
+  const userName = user?.replace(/"/g, "");
   const lnk = `${Config.apiUrl}/users/${userName}`;
+
   const fetchUser = async () => {
     try {
       const res = await fetch(`${Config.apiUrl}/users/${userName}`, {
@@ -28,9 +38,16 @@ const Profile = ({ user }) => {
       alert("caught", err);
     }
   };
+
   useLayoutEffect(() => {
     fetchUser();
   }, []);
+
+  const Logout = () => {
+    setIsNotSignedIn(true)
+    setUser(false)
+  }
+
   console.log(userData.firstName);
   return (
     <View style={styles.container}>
@@ -51,13 +68,17 @@ const Profile = ({ user }) => {
       <Text />
 
       <Text>{userData ? userData["helpsGiven"] : "0"} helps given</Text>
-      <Text>
-        {userData ? userData["helpsReceived"] : "0"} helps received
-      </Text>
+      <Text>{userData ? userData["helpsReceived"] : "0"} helps received</Text>
       <Text />
       <Text>{userData ? userData["gender"] : ""}</Text>
       <Text>{userData ? userData["address"] : ""}</Text>
       <Text>{userData ? userData["birthdate"] : ""}</Text>
+
+      <TouchableOpacity 
+      onPress={()=>Logout()}
+      style={styles.buttonLogout}>
+        <Text style={styles.buttonText}>Log out</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -68,5 +89,19 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     marginTop: 40,
+  },
+  buttonLogout: {
+    marginVertical: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 10,
+    width: Dimensions.get("window").width - 200,
+    height: 44,
+    borderRadius: 5,
+    backgroundColor: "red",
+  },
+  buttonText: {
+    fontSize: 18,
+    color: "#ffffff",
   },
 });

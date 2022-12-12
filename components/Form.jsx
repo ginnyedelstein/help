@@ -7,6 +7,7 @@ import {
   TextInput,
   StyleSheet,
   Dimensions,
+  SafeAreaView,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import RNPickerSelect from "react-native-picker-select";
@@ -41,7 +42,7 @@ const ErrorMessage = ({ errorValue }) => (
 );
 
 export default function Form() {
-  const {user} = useContext(authContext);
+  const { user } = useContext(authContext);
   const [selectedCategory, setSelectedCategory] = useState("general");
   const [selectedDistance, setSelectedDistance] = useState("5");
   const [getHelpActive, setGetHelpActive] = useState(true);
@@ -55,7 +56,6 @@ export default function Form() {
     { label: "Athletics", value: "athletics" },
     { label: "Children", value: "children" },
   ]);
-
 
   // function onSubmitHandler(values) {
   //   const { title, description, category, distance } = values;
@@ -87,11 +87,7 @@ export default function Form() {
     text = JSON.stringify(location);
   }
 
-  const onSubmitHandler = async ({
-    title,
-    description,
-    category
-  }) => {
+  const onSubmitHandler = async ({ title, description, category }) => {
     try {
       const res = await fetch(`${Config.apiUrl}/requests`, {
         method: "POST",
@@ -129,88 +125,87 @@ export default function Form() {
     }
   };
 
-  console.log(text);
-
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <View style={styles.button2Wrapper}>
-          <TouchableHighlight
-            activeOpacity={1}
-            onHideUnderlay={() => setGetHelpActive(true)}
-            onShowUnderlay={() => setGetHelpActive(false)}
-            underlayColor={Color.GREEN2}
-            onPress={() => setGetHelpActive(false)}
-            style={
-              getHelpActive
-                ? styles.button2ContainerActive
-                : styles.button2Container
-            }
+    <SafeAreaView>
+      <ScrollView>
+        <View style={styles.container}>
+          <View style={styles.button2Wrapper}>
+            <TouchableHighlight
+              activeOpacity={1}
+              onHideUnderlay={() => setGetHelpActive(true)}
+              onShowUnderlay={() => setGetHelpActive(false)}
+              underlayColor={Color.GREEN2}
+              onPress={() => setGetHelpActive(false)}
+              style={
+                getHelpActive
+                  ? styles.button2ContainerActive
+                  : styles.button2Container
+              }
+            >
+              <Text style={styles.buttonText}>Get Help</Text>
+            </TouchableHighlight>
+            <TouchableHighlight
+              activeOpacity={1}
+              onHideUnderlay={() => setGetHelpActive(false)}
+              onShowUnderlay={() => setGetHelpActive(true)}
+              underlayColor={Color.GREEN2}
+              onPress={() => setGetHelpActive(true)}
+              style={
+                getHelpActive
+                  ? styles.button2Container
+                  : styles.button2ContainerActive
+              }
+            >
+              <Text style={styles.buttonText}>Give Help</Text>
+            </TouchableHighlight>
+          </View>
+          {getHelpActive ? <Text>get help</Text> : <Text>give help</Text>}
+          <Formik
+            enableReinitialize={true}
+            initialValues={{
+              title: "",
+              description: "",
+              category: selectedCategory,
+            }}
+            onSubmit={(values, actions) => {
+              onSubmitHandler(values, actions);
+            }}
+            validationSchema={validationSchema}
           >
-            <Text style={styles.buttonText}>Get Help</Text>
-          </TouchableHighlight>
-          <TouchableHighlight
-            activeOpacity={1}
-            onHideUnderlay={() => setGetHelpActive(false)}
-            onShowUnderlay={() => setGetHelpActive(true)}
-            underlayColor={Color.GREEN2}
-            onPress={() => setGetHelpActive(true)}
-            style={
-              getHelpActive
-                ? styles.button2Container
-                : styles.button2ContainerActive
-            }
-          >
-            <Text style={styles.buttonText}>Give Help</Text>
-          </TouchableHighlight>
-        </View>
-        {getHelpActive ? <Text>get help</Text> : <Text>give help</Text>}
-        <Formik
-          enableReinitialize = {true}
-          initialValues={{
-            title: "",
-            description: "",
-            category:selectedCategory
-          }}
-          onSubmit={(values, actions) => {
-            onSubmitHandler(values, actions);
-          }}
-          validationSchema={validationSchema}
-        >
-          {({
-            handleChange,
-            values,
-            errors,
-            touched,
-            handleSubmit,
-            handleBlur,
-          }) => (
-            <>
-              <TextInput
-                style={styles.input}
-                numberOfLines={2}
-                value={values.title}
-                placeholder="Enter post title"
-                onChangeText={handleChange("title")}
-                autoCapitalize="none"
-                onBlur={handleBlur("title")}
-              />
-              <ErrorMessage errorValue={touched.title && errors.title} />
-              <TextInput
-                style={styles.largeInput}
-                multiline={true}
-                numberOfLines={1}
-                value={values.description}
-                placeholder="Enter description"
-                onChangeText={handleChange("description")}
-                autoCapitalize="none"
-                onBlur={handleBlur("description")}
-              />
-              <ErrorMessage
-                errorValue={touched.description && errors.description}
-              />
-              <Text>select category</Text>
-              {/* <Picker
+            {({
+              handleChange,
+              values,
+              errors,
+              touched,
+              handleSubmit,
+              handleBlur,
+            }) => (
+              <>
+                <TextInput
+                  style={styles.input}
+                  numberOfLines={2}
+                  value={values.title}
+                  placeholder="Enter post title"
+                  onChangeText={handleChange("title")}
+                  autoCapitalize="none"
+                  onBlur={handleBlur("title")}
+                />
+                <ErrorMessage errorValue={touched.title && errors.title} />
+                <TextInput
+                  style={styles.largeInput}
+                  multiline={true}
+                  numberOfLines={1}
+                  value={values.description}
+                  placeholder="Enter description"
+                  onChangeText={handleChange("description")}
+                  autoCapitalize="none"
+                  onBlur={handleBlur("description")}
+                />
+                <ErrorMessage
+                  errorValue={touched.description && errors.description}
+                />
+                <Text>select category</Text>
+                {/* <Picker
                 selectedValue={selectedCategory}
                 value={values.category}
                 onBlur={handleBlur("category")}
@@ -233,15 +228,15 @@ export default function Form() {
                 <Picker.Item label="Technology" value="technology" />
               </Picker> */}
 
-<View style={styles.multiDropView} >
-                <DropDownPicker
+                <View style={styles.multiDropView}>
+                  <DropDownPicker
                     multiple={false}
                     open={CategoryOpen}
                     value={CategoryValue}
                     items={CategoryItems}
                     setOpen={setCategoryOpen}
                     setValue={setCategoryValue}
-                    onChangeValue={handleChange('category')}
+                    onChangeValue={handleChange("category")}
                     setItems={setCategoryItems}
                     showBadgeDot={false}
                     style={{
@@ -250,10 +245,9 @@ export default function Form() {
                     }}
                     placeholder="Select Category"
                   />
-    </View>
+                </View>
 
-
-              {/* <RNPickerSelect
+                {/* <RNPickerSelect
                 onValueChange={(value) => {
                   setSelectedCategory(value);
                   console.log(selectedCategory);
@@ -265,8 +259,8 @@ export default function Form() {
                   { label: "Children", value: "children" },
                 ]}
               /> */}
-              {/* <Text>select help radius</Text> */}
-              {/* <Picker
+                {/* <Text>select help radius</Text> */}
+                {/* <Picker
                 value={values.distance}
                 selectedValue={selectedDistance}
                 onBlur={handleBlur("distance")}
@@ -281,17 +275,18 @@ export default function Form() {
                 <Picker.Item label="50km" value="50" />
                 <Picker.Item label="unlimited" value="ulimited" />
               </Picker> */}
-              <TouchableOpacity
-                onPress={handleSubmit}
-                style={styles.buttonContainer}
-              >
-                <Text style={styles.buttonText}>Submit</Text>
-              </TouchableOpacity>
-            </>
-          )}
-        </Formik>
-      </View>
-    </ScrollView>
+                <TouchableOpacity
+                  onPress={handleSubmit}
+                  style={styles.buttonContainer}
+                >
+                  <Text style={styles.buttonText}>Submit</Text>
+                </TouchableOpacity>
+              </>
+            )}
+          </Formik>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -375,12 +370,10 @@ const styles = StyleSheet.create({
     padding: 0,
     borderWidth: 1,
     borderRadius: 5,
-    
   },
-  multiDropView:{
-    width:Dimensions.get("window").width- 100 ,
-    flex:1,
-    zIndex:999
+  multiDropView: {
+    width: Dimensions.get("window").width - 100,
+    flex: 1,
+    zIndex: 999,
   },
-  
 });

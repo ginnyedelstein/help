@@ -6,9 +6,8 @@ import {
   FlatList,
   TouchableOpacity,
   RefreshControl,
-  SafeAreaView
+  SafeAreaView,
 } from "react-native";
-
 
 import * as Color from "../styles/Color";
 
@@ -21,9 +20,8 @@ import { useNavigation } from "@react-navigation/native";
 import { useContext } from "react";
 import { authContext } from "./AuthContext";
 
-
 const ChatList = () => {
-  const {user} = useContext(authContext);
+  const { user } = useContext(authContext);
   const [refresh, setRefresh] = useState(false);
 
   const wait = (timeout) => {
@@ -35,8 +33,6 @@ const ChatList = () => {
 
   const navigation = useNavigation();
 
-  console.log(chats)
-
   const fetchChats = async () => {
     try {
       const res = await fetch(`${Config.apiUrl}/chats/${user}`, {
@@ -47,15 +43,17 @@ const ChatList = () => {
         },
       });
       let resJson = await res.json();
-      let messages = resJson?.body
+      let messages = resJson?.body;
 
-      await Promise.all(messages.map(async (element,index) => {
-        let value =  await fetchUser(element.userId1)
-        messages[index]["name"] = value
-      }));
+      await Promise.all(
+        messages.map(async (element, index) => {
+          let value = await fetchUser(element.userId1);
+          messages[index]["name"] = value;
+        })
+      );
 
       setChats(messages);
-      setRefresh((val)=>setRefresh(!val))
+      setRefresh((val) => setRefresh(!val));
     } catch (err) {
       alert(err);
     }
@@ -73,7 +71,6 @@ const ChatList = () => {
     fetchChats();
   }, []);
 
-
   const fetchUser = async (id) => {
     try {
       const res = await fetch(`${Config.apiUrl}/users/${id}`, {
@@ -84,9 +81,9 @@ const ChatList = () => {
       });
       const resJson = await res.json();
       if (res.status === 200) {
-        let name = resJson?.body?.firstName +" "+ resJson?.body?.lastName
-        return(name)
-      } 
+        let name = resJson?.body?.firstName + " " + resJson?.body?.lastName;
+        return name;
+      }
     } catch (err) {
       alert(err.message);
     }
@@ -95,7 +92,6 @@ const ChatList = () => {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
@@ -103,14 +99,15 @@ const ChatList = () => {
           return { ...chat, key: chat.id };
         })}
         renderItem={({ item, index }) => {
-          console.log(item)
           return (
             <View style={styles.card} key={index}>
-              <Text style={styles.request}>{`Chat ${index + 1}`} </Text>
+              {/* <Text style={styles.request}>{`Chat ${index + 1}`} </Text> */}
               <Text style={styles.request}>{item.name}</Text>
               <Text style={styles.message}>
                 {typeof item.messages === "string" && item.messages.length > 4
-                  ? JSON.parse(item.messages)[0].text
+                  ? JSON.parse(item.messages)[
+                      JSON.parse(item.messages).length - 1
+                    ].text
                   : ""}{" "}
               </Text>
 

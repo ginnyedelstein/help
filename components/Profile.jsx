@@ -4,16 +4,16 @@ import {
   StyleSheet,
   Dimensions,
   TouchableOpacity,
+  SafeAreaView,
 } from "react-native";
 import React, { useState, useLayoutEffect } from "react";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import Login from "./Login";
 import Config from "../lib/Config";
 import { useContext } from "react";
 import { authContext } from "./AuthContext";
 
 const Profile = () => {
-  const {user ,setIsNotSignedIn, setUser } = useContext(authContext);
+  const { user, setIsNotSignedIn, setUser } = useContext(authContext);
   const [userData, setUserData] = useState({});
   const userName = user?.replace(/"/g, "");
   const lnk = `${Config.apiUrl}/users/${userName}`;
@@ -44,42 +44,39 @@ const Profile = () => {
   }, []);
 
   const Logout = () => {
-    setIsNotSignedIn(true)
-    setUser(false)
-  }
+    setIsNotSignedIn(true);
+    setUser(false);
+  };
 
-  console.log(userData.firstName);
   return (
-    <View style={styles.container}>
-      <Text>CURRENT USER: {userData.userId}</Text>
-      <Text />
-      <Text />
+    <SafeAreaView>
+      <View style={styles.container}>
+        <MaterialCommunityIcons
+          name="account-circle"
+          color={"grey"}
+          size={100}
+        />
+        {userData ? <Text>{userData.firstName}</Text> : <Text />}
 
-      <Text />
+        <View style={{ flexDirection: "row" }}>
+          <MaterialCommunityIcons name="star" color={"grey"} size={30} />
+          <MaterialCommunityIcons name="star" color={"grey"} size={30} />
+          <MaterialCommunityIcons name="star" color={"grey"} size={30} />
+        </View>
+        <Text />
 
-      <MaterialCommunityIcons name="account-circle" color={"grey"} size={100} />
-      {userData ? <Text>{userData.firstName}</Text> : <Text />}
+        <Text>{userData ? userData["helpsGiven"] : "0"} helps given</Text>
+        <Text>{userData ? userData["helpsReceived"] : "0"} helps received</Text>
+        <Text />
+        <Text>{userData ? userData["gender"] : ""}</Text>
+        <Text>{userData ? userData["address"] : ""}</Text>
+        <Text>{userData ? userData["birthdate"] : ""}</Text>
 
-      <View style={{ flexDirection: "row" }}>
-        <MaterialCommunityIcons name="star" color={"grey"} size={30} />
-        <MaterialCommunityIcons name="star" color={"grey"} size={30} />
-        <MaterialCommunityIcons name="star" color={"grey"} size={30} />
+        <TouchableOpacity onPress={() => Logout()} style={styles.buttonLogout}>
+          <Text style={styles.buttonText}>Log out</Text>
+        </TouchableOpacity>
       </View>
-      <Text />
-
-      <Text>{userData ? userData["helpsGiven"] : "0"} helps given</Text>
-      <Text>{userData ? userData["helpsReceived"] : "0"} helps received</Text>
-      <Text />
-      <Text>{userData ? userData["gender"] : ""}</Text>
-      <Text>{userData ? userData["address"] : ""}</Text>
-      <Text>{userData ? userData["birthdate"] : ""}</Text>
-
-      <TouchableOpacity 
-      onPress={()=>Logout()}
-      style={styles.buttonLogout}>
-        <Text style={styles.buttonText}>Log out</Text>
-      </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 };
 export default Profile;

@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { GiftedChat } from "react-native-gifted-chat";
 import Config from "../lib/Config";
 import { v4 as uuid } from "uuid";
-// import { SafeAreaView, Text, StyleSheet, View } from 'react-native';
 
 const Chat = ({ route }) => {
   const { requestUserId, currentUserId } = route.params;
@@ -19,7 +18,6 @@ const Chat = ({ route }) => {
   }
 
   const fetchUser2 = async () => {
-    console.log("requestUserId", requestUserId);
     try {
       const res = await fetch(`${Config.apiUrl}/users/${requestUserId}`, {
         method: "GET",
@@ -30,7 +28,6 @@ const Chat = ({ route }) => {
       const resJson = await res.json();
       if (res.status === 200) {
         setUser2(resJson.body);
-        console.log(user2);
       } else {
         alert(res.error);
       }

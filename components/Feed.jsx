@@ -10,7 +10,7 @@ import {
   TouchableHighlight,
   TouchableOpacity,
   Alert,
-  SafeAreaView
+  SafeAreaView,
 } from "react-native";
 
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -27,8 +27,7 @@ import { authContext } from "./AuthContext";
 import { useContext } from "react";
 
 const Feed = () => {
-
-  const {user} = useContext(authContext);
+  const { user } = useContext(authContext);
   const help = [1, 2, 3, 4];
   const [categoryOpen, setCategoryOpen] = useState(false);
   const [categoryValue, setCategoryValue] = useState([]);
@@ -73,11 +72,11 @@ const Feed = () => {
       });
       const resJson = await res.json();
       if (res.status === 200) {
-        let recent =  resJson?.body?.sort(function(a,b){
+        let recent = resJson?.body?.sort(function (a, b) {
           return new Date(b.updatedAt) - new Date(a.updatedAt);
         });
-        setFeed(recent)
-        setFeedDisplay(recent)
+        setFeed(recent);
+        setFeedDisplay(recent);
       } else {
         alert(resJson.message);
       }
@@ -181,67 +180,58 @@ const Feed = () => {
         }
       > */}
       <View style={styles.filersContainer}>
-        <View style={styles.multiDropView} >
-        <DropDownPicker
-          multiple={true}
-          open={categoryOpen}
-          value={categoryValue}
-          items={categoryItems}
-          setOpen={setCategoryOpen}
-          setValue={setCategoryValue}
-          setItems={setCategoryItems}
-          showBadgeDot={false}
-          style={{
-            backgroundColor: Color.GREEN3,
-            borderColor: Color.GREEN3,
-          }}
-          onChangeValue={(value) => {
-            console.log(categoryValue);
-            // console.log(categoryValue);
-            // for (const v of value) {
-            //   console.log(v);
-            // }
-            if (categoryValue.length) {
+        <View style={styles.multiDropView}>
+          <DropDownPicker
+            multiple={true}
+            open={categoryOpen}
+            value={categoryValue}
+            items={categoryItems}
+            setOpen={setCategoryOpen}
+            setValue={setCategoryValue}
+            setItems={setCategoryItems}
+            showBadgeDot={false}
+            style={{
+              backgroundColor: Color.GREEN3,
+              borderColor: Color.GREEN3,
+            }}
+            onChangeValue={() => {
+              if (categoryValue.length) {
+                setFeedDisplay(
+                  feed.filter((item) => categoryValue.includes(item.category))
+                );
+              } else {
+                setFeedDisplay(feed);
+              }
+            }}
+            onOpen={onCategoryOpen}
+            placeholder="Category"
+          />
+        </View>
+        <View style={styles.multiDropView}>
+          <DropDownPicker
+            multiple={false}
+            open={radiusOpen}
+            value={radiusValue}
+            items={radiusItems}
+            setOpen={setRadiusOpen}
+            setValue={setRadiusValue}
+            setItems={setRadiusItems}
+            showBadgeDot={false}
+            style={{
+              backgroundColor: Color.GREEN3,
+              borderColor: Color.GREEN3,
+            }}
+            onChangeValue={(value) => {
+              alert(value);
+              const filteredFeed = feed;
               setFeedDisplay(
-                feed.filter((item) => categoryValue.includes(item.category))
+                feed.filter((item) => item.category === "ELECTRONICS")
               );
-            } else {
-              setFeedDisplay(feed);
-            }
-
-            // console.log(feed.filter((i) => i.category === value));
-          }}
-          onOpen={onCategoryOpen}
-          placeholder="Category"
-        />
-
-</View>
-<View style={styles.multiDropView} >
-        <DropDownPicker
-          multiple={false}
-          open={radiusOpen}
-          value={radiusValue}
-          items={radiusItems}
-          setOpen={setRadiusOpen}
-          setValue={setRadiusValue}
-          setItems={setRadiusItems}
-          showBadgeDot={false}
-          style={{
-            backgroundColor: Color.GREEN3,
-            borderColor: Color.GREEN3,
-          }}
-          onChangeValue={(value) => {
-            alert(value);
-            console.log(radiusValue);
-            const filteredFeed = feed;
-            setFeedDisplay(
-              feed.filter((item) => item.category === "ELECTRONICS")
-            );
-          }}
-          onOpen={onRadiusOpen}
-          placeholder="Radius"
-        />
-      </View>
+            }}
+            onOpen={onRadiusOpen}
+            placeholder="Radius"
+          />
+        </View>
       </View>
       {/* {feed.map((feedItem, index) => (
         <Text data={feed}>
@@ -250,7 +240,6 @@ const Feed = () => {
           {feedItem.acceptedUserId || "no one"}
         </Text>
       ))} */}
-      <Text>CURRENT USER: {user}</Text>
       <FlatList
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -359,14 +348,14 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-around",
-    paddingHorizontal:10,
-    zIndex:9999
+    paddingHorizontal: 10,
+    zIndex: 9999,
   },
-  multiDropView:{
-    flex:1,
-    padding:5
+  multiDropView: {
+    flex: 1,
+    padding: 5,
   },
-  
+
   card: {
     margin: 10,
     backgroundColor: Color.GREEN2,

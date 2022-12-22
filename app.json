@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "help-new",
-    "slug": "help-new",
+    "name": "help-v2",
+    "slug": "help-v2",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -14,9 +14,7 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.help.help"
@@ -32,9 +30,7 @@
       "favicon": "./assets/favicon.png"
     },
     "extra": {
-      "eas": {
-        "projectId": "79f3774e-5144-4e13-9968-73bcceddd219"
-      }
+      "eas": {}
     }
   }
 }

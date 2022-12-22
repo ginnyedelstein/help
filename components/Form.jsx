@@ -55,6 +55,12 @@ export default function Form() {
     { label: "General", value: "general" },
     { label: "Athletics", value: "athletics" },
     { label: "Children", value: "children" },
+    { label: "Clothing", value: "clothing" },
+    { label: "Entertainment", value: "entertainment" },
+    { label: "Home", value: "home" },
+    { label: "Kitchen", value: "kitchen" },
+    { label: "Pet", value: "pet" },
+    { label: "Technology", value: "technology" },
   ]);
 
   // function onSubmitHandler(values) {
